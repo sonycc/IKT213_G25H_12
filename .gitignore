@@ -1,0 +1,74 @@
+############################
+# .NET build artifacts
+############################
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio / VS Code
+.vscode/
+*.vs/
+*.idea/
+
+############################
+# Python
+############################
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+.conda/
+*.ipynb_checkpoints
+
+############################
+# Conda / Environment
+############################
+*.conda
+*.lock
+*.yaml
+*.yml
+
+############################
+# Datasets / Models
+############################
+data/raw/
+data/processed/
+data/models/
+*.onnx
+*.h5
+*.pth
+
+############################
+# Reports / Exports
+############################
+*.csv
+*.pdf
+*.png
+*.jpg
+*.jpeg
+
+############################
+# OS-specific
+############################
+.DS_Store
+Thumbs.db
+desktop.ini
+
+############################
+# Logs / Temp
+############################
+*.log
+*.tmp
+*.bak
+*.swp
