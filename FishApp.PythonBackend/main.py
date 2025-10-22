@@ -113,6 +113,7 @@ async def flip_vertical():
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="flipped_vertical.png")
 
+
 @app.post("/gaussian_blur")
 async def gaussian_blur(k_size: int):
     global current_image
@@ -123,6 +124,7 @@ async def gaussian_blur(k_size: int):
     current_image[:] = gaussian
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="gaussian_blur.png")
+
 
 @app.post("/zoom_in")
 async def zoom_in():
@@ -136,6 +138,7 @@ async def zoom_in():
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="zoomed_in.png")
 
+
 @app.post("/zoom_out")
 async def zoom_out():
     global current_image
@@ -147,6 +150,27 @@ async def zoom_out():
     current_image[:] = zoomed_image
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="zoomed_out.png")
+
+
+@app.post("/sobel")
+async def sobel():
+    global current_image
+    if current_image is None:
+        raise HTTPException(status_code=400, detail="No image uploaded")
+
+    current_image = grayscale_image()
+    gaussian = gaussian_blur()
+
+    sobel_x = cv2.Sobel(gaussian, cv2.CV_64F, 1, 0, 1)
+    sobel_y = cv2.Sobel(gaussian, cv2.CV_64F, 0, 1, 1)
+    image_sobel_magnitude = cv2.magnitude(sobel_x, sobel_y)
+    image_sobel_magnitude = cv2.convertScaleAbs(image_sobel_magnitude)
+    current_image[:] = save_temp_image(image_sobel_magnitude)
+    tmp_path = save_temp_image(current_image)
+    return FileResponse(tmp_path, media_type="image/png", filename="gaussian_blur.png")
+
+
+
 
 @app.get("/download")
 async def download_image():
