@@ -113,6 +113,18 @@ async def flip_vertical():
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="flipped_vertical.png")
 
+@app.post("/gaussian_blur")
+async def gaussian_blur(k_size: int):
+    global current_image
+    if current_image is None:
+        raise HTTPException(status_code=400, detail="No image uploaded")
+
+    gaussian = cv2.GaussianBlur(current_image, (k_size, k_size), cv2.BORDER_DEFAULT)
+    current_image[:] = gaussian
+    tmp_path = save_temp_image(current_image)
+    return FileResponse(tmp_path, media_type="image/png", filename="gaussian_blur.png")
+
+
 @app.get("/download")
 async def download_image():
     global current_image
