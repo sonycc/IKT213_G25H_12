@@ -124,6 +124,29 @@ async def gaussian_blur(k_size: int):
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="gaussian_blur.png")
 
+@app.post("/zoom_in")
+async def zoom_in():
+    global current_image
+    if current_image is None:
+        raise HTTPException(status_code=400, detail="No image uploaded")
+
+    scale_factor = 1.2
+    zoomed_image = cv2.resize(current_image, None, fx=scale_factor, fy=scale_factor, interpolation=cv2.INTER_CUBIC)
+    current_image[:] = zoomed_image
+    tmp_path = save_temp_image(current_image)
+    return FileResponse(tmp_path, media_type="image/png", filename="zoomed_in.png")
+
+@app.post("/zoom_out")
+async def zoom_out():
+    global current_image
+    if current_image is None:
+        raise HTTPException(status_code=400, detail="No image uploaded")
+
+    scale_factor = .8
+    zoomed_image = cv2.resize(current_image, None, fx=scale_factor, fy=scale_factor, interpolation=cv2.INTER_CUBIC)
+    current_image[:] = zoomed_image
+    tmp_path = save_temp_image(current_image)
+    return FileResponse(tmp_path, media_type="image/png", filename="zoomed_out.png")
 
 @app.get("/download")
 async def download_image():
