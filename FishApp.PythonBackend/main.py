@@ -90,6 +90,29 @@ async def crop_image(x1: int, y1: int, x2: int, y2: int):
     return FileResponse(tmp_path, media_type="image/png", filename="cropped.png")
 
 
+@app.post("/flip_horizontal")
+async def flip_horizontal():
+    global current_image
+    if current_image is None:
+        raise HTTPException(status_code=400, detail="No image uploaded")
+
+    flipped_image = cv2.flip(current_image, 1)
+    current_image[:] = flipped_image
+    tmp_path = save_temp_image(current_image)
+    return FileResponse(tmp_path, media_type="image/png", filename="flipped_horizontal.png")
+
+
+@app.post("/flip_vertical")
+async def flip_vertical():
+    global current_image
+    if current_image is None:
+        raise HTTPException(status_code=400, detail="No image uploaded")
+
+    flipped_image = cv2.flip(current_image, 0)
+    current_image[:] = flipped_image
+    tmp_path = save_temp_image(current_image)
+    return FileResponse(tmp_path, media_type="image/png", filename="flipped_vertical.png")
+
 @app.get("/download")
 async def download_image():
     global current_image
