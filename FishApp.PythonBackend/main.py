@@ -4,10 +4,20 @@ import numpy as np
 import cv2
 import tempfile
 
+from imageMenuFunc import (rotate_image_func, crop_image_func,
+                           flip_horizontal_func, flip_vertical_func)
+from toolsMenuFunc import (grayscale_image_func, gaussian_blur_func,
+                           zoom_in_func, zoom_out_func, sobel_func)
+
 app = FastAPI(title="Fish Image Processing API")
 
 # Global variable to store the current working image
 current_image = None
+
+
+def check_image():
+    if current_image is None:
+        raise HTTPException(status_code=400, detail="No image uploaded")
 
 
 def save_temp_image(img):
@@ -44,20 +54,13 @@ async def upload_image(file: UploadFile = File(...)):
 @app.post("/rotate")
 async def rotate_image(angle: int):
     global current_image
-    if current_image is None:
-        raise HTTPException(status_code=400, detail="No image uploaded")
+    check_image()
 
-    if angle not in [90, 180, 270]:
-        raise HTTPException(status_code=400, detail="Angle must be 90, 180, or 270")
+    try:
+        current_image = rotate_image_func(current_image, angle)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
-    if angle == 90:
-        rotated = cv2.rotate(current_image, cv2.ROTATE_90_CLOCKWISE)
-    elif angle == 180:
-        rotated = cv2.rotate(current_image, cv2.ROTATE_180)
-    else:  # 270
-        rotated = cv2.rotate(current_image, cv2.ROTATE_90_COUNTERCLOCKWISE)
-
-    current_image[:] = rotated
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="rotated.png")
 
@@ -65,11 +68,9 @@ async def rotate_image(angle: int):
 @app.post("/grayscale")
 async def grayscale_image():
     global current_image
-    if current_image is None:
-        raise HTTPException(status_code=400, detail="No image uploaded")
+    check_image()
 
-    gray = cv2.cvtColor(current_image, cv2.COLOR_BGR2GRAY)
-    current_image[:] = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)
+    current_image = grayscale_image_func(current_image)
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="grayscale.png")
 
@@ -77,15 +78,13 @@ async def grayscale_image():
 @app.post("/crop")
 async def crop_image(x1: int, y1: int, x2: int, y2: int):
     global current_image
-    if current_image is None:
-        raise HTTPException(status_code=400, detail="No image uploaded")
+    check_image()
 
-    h, w = current_image.shape[:2]
-    if not (0 <= x1 < x2 <= w) or not (0 <= y1 < y2 <= h):
-        raise HTTPException(status_code=400, detail="Crop coordinates out of bounds")
+    try:
+        current_image = crop_image_func(current_image, x1, y1, x2, y2)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
-    cropped = current_image[y1:y2, x1:x2]
-    current_image[:] = cropped
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="cropped.png")
 
@@ -93,11 +92,9 @@ async def crop_image(x1: int, y1: int, x2: int, y2: int):
 @app.post("/flip_horizontal")
 async def flip_horizontal():
     global current_image
-    if current_image is None:
-        raise HTTPException(status_code=400, detail="No image uploaded")
+    check_image()
 
-    flipped_image = cv2.flip(current_image, 1)
-    current_image[:] = flipped_image
+    current_image = flip_horizontal_func(current_image)
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="flipped_horizontal.png")
 
@@ -105,11 +102,9 @@ async def flip_horizontal():
 @app.post("/flip_vertical")
 async def flip_vertical():
     global current_image
-    if current_image is None:
-        raise HTTPException(status_code=400, detail="No image uploaded")
+    check_image()
 
-    flipped_image = cv2.flip(current_image, 0)
-    current_image[:] = flipped_image
+    current_image = flip_vertical_func(current_image)
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="flipped_vertical.png")
 
@@ -117,11 +112,9 @@ async def flip_vertical():
 @app.post("/gaussian_blur")
 async def gaussian_blur(k_size: int):
     global current_image
-    if current_image is None:
-        raise HTTPException(status_code=400, detail="No image uploaded")
+    check_image()
 
-    gaussian = cv2.GaussianBlur(current_image, (k_size, k_size), cv2.BORDER_DEFAULT)
-    current_image[:] = gaussian
+    current_image = gaussian_blur_func(current_image, k_size)
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="gaussian_blur.png")
 
@@ -129,12 +122,9 @@ async def gaussian_blur(k_size: int):
 @app.post("/zoom_in")
 async def zoom_in():
     global current_image
-    if current_image is None:
-        raise HTTPException(status_code=400, detail="No image uploaded")
+    check_image()
 
-    scale_factor = 1.2
-    zoomed_image = cv2.resize(current_image, None, fx=scale_factor, fy=scale_factor, interpolation=cv2.INTER_CUBIC)
-    current_image[:] = zoomed_image
+    current_image = zoom_in_func(current_image)
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="zoomed_in.png")
 
@@ -142,41 +132,27 @@ async def zoom_in():
 @app.post("/zoom_out")
 async def zoom_out():
     global current_image
-    if current_image is None:
-        raise HTTPException(status_code=400, detail="No image uploaded")
+    check_image()
 
-    scale_factor = .8
-    zoomed_image = cv2.resize(current_image, None, fx=scale_factor, fy=scale_factor, interpolation=cv2.INTER_CUBIC)
-    current_image[:] = zoomed_image
+    current_image = zoom_out_func(current_image)
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="zoomed_out.png")
 
 
 @app.post("/sobel")
-async def sobel():
+async def sobel(k_size: int):
     global current_image
-    if current_image is None:
-        raise HTTPException(status_code=400, detail="No image uploaded")
+    check_image()
 
-    current_image = grayscale_image()
-    gaussian = gaussian_blur()
-
-    sobel_x = cv2.Sobel(gaussian, cv2.CV_64F, 1, 0, 1)
-    sobel_y = cv2.Sobel(gaussian, cv2.CV_64F, 0, 1, 1)
-    image_sobel_magnitude = cv2.magnitude(sobel_x, sobel_y)
-    image_sobel_magnitude = cv2.convertScaleAbs(image_sobel_magnitude)
-    current_image[:] = save_temp_image(image_sobel_magnitude)
+    current_image = sobel_func(current_image, k_size)
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="gaussian_blur.png")
-
-
 
 
 @app.get("/download")
 async def download_image():
     global current_image
-    if current_image is None:
-        raise HTTPException(status_code=400, detail="No image uploaded")
+    check_image()
 
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="current_image.png")
