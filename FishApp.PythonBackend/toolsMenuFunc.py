@@ -13,19 +13,6 @@ def gaussian_blur_func(image, k_size: int):
     return image
 
 
-def zoom_in_func(image):
-    scale_factor = 1.2
-    zoomed_image = cv2.resize(image, None, fx=scale_factor, fy=scale_factor, interpolation=cv2.INTER_CUBIC)
-    image[:] = zoomed_image
-    return image
-
-def zoom_out_func(image):
-    scale_factor = 0.8
-    zoomed_image = cv2.resize(image, None, fx=scale_factor, fy=scale_factor, interpolation=cv2.INTER_CUBIC)
-    image[:] = zoomed_image
-    return image
-
-
 def sobel_func(image, k_size: int):
     image = grayscale_image_func(image)
     gaussian = gaussian_blur_func(image, k_size)

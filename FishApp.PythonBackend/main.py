@@ -6,8 +6,7 @@ import tempfile
 
 from imageMenuFunc import (rotate_image_func, crop_image_func,
                            flip_horizontal_func, flip_vertical_func)
-from toolsMenuFunc import (grayscale_image_func, gaussian_blur_func,
-                           zoom_in_func, zoom_out_func, sobel_func)
+from toolsMenuFunc import grayscale_image_func, gaussian_blur_func, sobel_func
 
 app = FastAPI(title="Fish Image Processing API")
 
@@ -117,27 +116,6 @@ async def gaussian_blur(k_size: int):
     current_image = gaussian_blur_func(current_image, k_size)
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="gaussian_blur.png")
-
-
-@app.post("/zoom_in")
-async def zoom_in():
-    global current_image
-    check_image()
-
-    current_image = zoom_in_func(current_image)
-    tmp_path = save_temp_image(current_image)
-    return FileResponse(tmp_path, media_type="image/png", filename="zoomed_in.png")
-
-
-@app.post("/zoom_out")
-async def zoom_out():
-    global current_image
-    check_image()
-
-    current_image = zoom_out_func(current_image)
-    tmp_path = save_temp_image(current_image)
-    return FileResponse(tmp_path, media_type="image/png", filename="zoomed_out.png")
-
 
 @app.post("/sobel")
 async def sobel(k_size: int):
