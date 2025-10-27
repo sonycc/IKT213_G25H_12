@@ -1,12 +1,13 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 import numpy as np
 import cv2
 import tempfile
 
-from imageMenuFunc import (rotate_image_func, crop_image_func,
-                           flip_horizontal_func, flip_vertical_func)
-from toolsMenuFunc import grayscale_image_func, gaussian_blur_func, sobel_func
+from func.imageMenuFunc import (rotate_image_func, crop_image_func,
+                                flip_horizontal_func, flip_vertical_func)
+from func.toolsMenuFunc import grayscale_image_func, gaussian_blur_func, sobel_func
+from func.onnxFunc import predict
 
 app = FastAPI(title="Fish Image Processing API")
 
@@ -48,6 +49,15 @@ async def upload_image(file: UploadFile = File(...)):
     current_image = img
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename=file.filename)
+
+
+@app.post("/predict")
+async def predict_image():
+    global current_image
+    check_image()
+
+    output = predict(current_image)
+    return JSONResponse({"predictions": output})
 
 
 @app.post("/rotate")
@@ -116,6 +126,7 @@ async def gaussian_blur(k_size: int):
     current_image = gaussian_blur_func(current_image, k_size)
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="gaussian_blur.png")
+
 
 @app.post("/sobel")
 async def sobel(k_size: int):
