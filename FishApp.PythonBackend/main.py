@@ -57,7 +57,7 @@ async def rotate_image(angle: int):
     else:  # 270
         rotated = cv2.rotate(current_image, cv2.ROTATE_90_COUNTERCLOCKWISE)
 
-    current_image[:] = rotated
+    current_image = rotated
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="rotated.png")
 
