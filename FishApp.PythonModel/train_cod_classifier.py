@@ -1,4 +1,3 @@
-# FishApp.PythonModel/train_cod_classifier.py
 from pathlib import Path
 import torch
 from torchvision import transforms, datasets, models
@@ -26,7 +25,6 @@ val_tf = transforms.Compose([
 ])
 
 def main():
-    # IMPORTANT on Windows: num_workers=0 avoids multiprocessing spawn issues
     train_ds = datasets.ImageFolder(str(train_dir), transform=train_tf)
     val_ds   = datasets.ImageFolder(str(val_dir),   transform=val_tf)
     train_loader = torch.utils.data.DataLoader(train_ds, batch_size=16, shuffle=True,  num_workers=0)
@@ -70,17 +68,17 @@ def main():
         model.load_state_dict(torch.load(best_path, map_location=device))
     model.eval()
 
-    # Export ONNX
     dummy = torch.randn(1,3,224,224, device=device)
     onnx_path = ROOT / "cod_classifier.onnx"
+
     torch.onnx.export(
         model, dummy, str(onnx_path),
         input_names=["input"], output_names=["logits"],
-        opset_version=12, do_constant_folding=True,
-        dynamic_axes={"input":{0:"batch"},"logits":{0:"batch"}}
+        opset_version=18,
+        do_constant_folding=True,
+        dynamic_shapes={"x": {0: "batch"}}
     )
 
-    # Save classes
     idx_to_class = {v:k for k,v in train_ds.class_to_idx.items()}
     with open(ROOT/"classes.txt","w", encoding="utf-8") as f:
         for i in range(len(idx_to_class)):

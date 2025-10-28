@@ -3,11 +3,9 @@ from pathlib import Path
 
 random.seed(42)
 
-# Absolute paths to your raw folders
 RAW_COD = Path(r"C:\Users\arnda\ikt213g25h\IKT213_G25H_12\cod-dataset")
 RAW_NOT = Path(r"C:\Users\arnda\ikt213g25h\IKT213_G25H_12\dataset-notfish")
 
-# Output folder: ./data inside the SAME folder as this script
 ROOT = Path(__file__).resolve().parent
 OUT  = ROOT / "data"
 
@@ -26,7 +24,6 @@ def main(split=0.8):
     notf = collect(RAW_NOT)
     print(f"Found {len(cod)} cod, {len(notf)} not_cod")
 
-    # Start fresh
     if OUT.exists():
         shutil.rmtree(OUT)
 
@@ -35,7 +32,7 @@ def main(split=0.8):
     c_train = int(len(cod)*split)
     n_train = int(len(notf)*split)
 
-    # Create dirs
+    # Create dir
     (OUT/"train"/"cod").mkdir(parents=True, exist_ok=True)
     (OUT/"train"/"not_cod").mkdir(parents=True, exist_ok=True)
     (OUT/"val"/"cod").mkdir(parents=True, exist_ok=True)
