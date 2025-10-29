@@ -11,8 +11,6 @@ from func.toolsMenuFunc import (grayscale_image_func, gaussian_blur_func,
 from func.onnxFunc import predict
 
 app = FastAPI(title="Fish Image Processing API")
-
-# Global variable to store the current working image
 current_image = None
 
 
@@ -22,31 +20,23 @@ def check_image():
 
 
 def save_temp_image(img):
-    """Save the image to a temporary file and return its path."""
-    tmp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
-    cv2.imwrite(tmp_file.name, img)
-    return tmp_file.name
-
+    tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
+    cv2.imwrite(tmp.name, img)
+    return tmp.name
 
 @app.get("/ping")
 async def ping():
-    return {"status": "ok"}
-
+    return {"status":"ok"}
 
 @app.post("/upload-image")
 async def upload_image(file: UploadFile = File(...)):
     global current_image
-
-    if file.content_type not in ["image/png", "image/jpeg", "image/jpg"]:
-        raise HTTPException(status_code=400, detail="Only PNG/JPG files are allowed")
-
+    if file.content_type not in ["image/png","image/jpeg","image/jpg"]:
+        raise HTTPException(400, "Only PNG/JPG files are allowed")
     contents = await file.read()
-    np_array = np.frombuffer(contents, np.uint8)
-    img = cv2.imdecode(np_array, cv2.IMREAD_COLOR)
-
+    img = cv2.imdecode(np.frombuffer(contents, np.uint8), cv2.IMREAD_COLOR)
     if img is None:
-        raise HTTPException(status_code=400, detail="Invalid image file")
-
+        raise HTTPException(400, "Invalid image file")
     current_image = img
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename=file.filename)
@@ -86,7 +76,7 @@ async def grayscale_image():
 
 
 @app.post("/crop")
-async def crop_image(x1: int, y1: int, x2: int, y2: int):
+async def crop_image(x1:int, y1:int, x2:int, y2:int):
     global current_image
     check_image()
 
@@ -159,5 +149,4 @@ async def download_image():
 
 if __name__ == "__main__":
     import uvicorn
-
-    uvicorn.run(app, host="0.0.0.0", port=5000)
+    uvicorn.run(app, host="127.0.0.1", port=5000)
