@@ -6,7 +6,8 @@ import tempfile
 
 from func.imageMenuFunc import (rotate_image_func, crop_image_func,
                                 flip_horizontal_func, flip_vertical_func)
-from func.toolsMenuFunc import grayscale_image_func, gaussian_blur_func, sobel_func
+from func.toolsMenuFunc import (grayscale_image_func, gaussian_blur_func,
+                                sobel_func, binary_filter_func)
 from func.onnxFunc import predict
 
 app = FastAPI(title="Fish Image Processing API")
@@ -136,6 +137,15 @@ async def sobel(k_size: int):
     current_image = sobel_func(current_image, k_size)
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="gaussian_blur.png")
+
+@app.post("/binary")
+async def binary_filter():
+    global current_image
+    check_image()
+
+    current_image = binary_filter_func(current_image)
+    tmp_path = save_temp_image(current_image)
+    return FileResponse(tmp_path, media_type="image/png", filename="binary_filter.png")
 
 
 @app.get("/download")

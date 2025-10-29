@@ -23,3 +23,16 @@ def sobel_func(image, k_size: int):
     image_sobel_magnitude = cv2.convertScaleAbs(image_sobel_magnitude)
     image[:] = image_sobel_magnitude
     return image
+
+
+def binary_filter_func(image):
+    gray = grayscale_image_func(image)
+    binary = cv2.adaptiveThreshold(
+        gray, 255,
+        cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+        cv2.THRESH_BINARY,
+        21, 5
+    )
+    image[:] = binary
+    return image
+
