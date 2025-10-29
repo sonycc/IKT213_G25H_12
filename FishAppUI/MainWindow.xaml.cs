@@ -71,6 +71,22 @@ namespace FishAppUI
         private async void Rotate270Button_Click(object sender, RoutedEventArgs e) => await ApplyOperation("rotate?angle=270");
         private async void GrayscaleButton_Click(object sender, RoutedEventArgs e) => await ApplyOperation("grayscale");
 
+        private async void OnnxButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var response = await httpClient.GetAsync("ONNX");
+                response.EnsureSuccessStatusCode();
+
+                var json = await response.Content.ReadAsStringAsync();
+                MessageBox.Show(json, "ONNX Result", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error calling ONNX: {ex.Message}", "ONNX Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         // Helper to call backend endpoints for operations
         private async Task ApplyOperation(string endpoint)
         {
