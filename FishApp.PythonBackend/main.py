@@ -21,6 +21,16 @@ def save_temp_image(img):
 async def ping():
     return {"status": "ok"}
 
+@app.get("/ONNX")
+async def onnx():
+    # Placeholder response shaped similar to your example
+    return {
+        "not implementet": {
+            "detected": ["name"],     # replace with actual detected label
+            "certainty": "75%"        # replace with actual certainty (as percent string)
+        }
+    }
+
 
 @app.post("/upload-image")
 async def upload_image(file: UploadFile = File(...)):

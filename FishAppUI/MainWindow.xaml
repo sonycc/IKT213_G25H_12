@@ -103,6 +103,10 @@
                 Grayscale
             </Button>
 
+            <Button Name="OnnxButton" Width="200" Height="40" Click="OnnxButton_Click" Margin="0,0,0,10">
+                Run ONNX
+            </Button>
+
             <!-- Undo and Reset Controls -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
                 <Button Name="UndoButton" Width="100" Height="40" Click="UndoButton_Click" Margin="0,0,10,0" IsEnabled="False">
