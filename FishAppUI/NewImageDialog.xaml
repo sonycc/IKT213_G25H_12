@@ -1,0 +1,57 @@
+<Window x:Class="FishAppUI.NewImageDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="New Image" Height="300" Width="400" ResizeMode="NoResize">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Title -->
+        <TextBlock Text="Create New Image" FontSize="16" FontWeight="Bold" Grid.Row="0" Margin="0,0,0,20"/>
+        
+        <!-- Width -->
+        <StackPanel Grid.Row="1" Margin="0,0,0,10">
+            <TextBlock Text="Width:" Margin="0,0,0,5"/>
+            <TextBox Name="WidthTextBox" Text="800" Width="100" HorizontalAlignment="Left"/>
+        </StackPanel>
+        
+        <!-- Height -->
+        <StackPanel Grid.Row="2" Margin="0,0,0,10">
+            <TextBlock Text="Height:" Margin="0,0,0,5"/>
+            <TextBox Name="HeightTextBox" Text="600" Width="100" HorizontalAlignment="Left"/>
+        </StackPanel>
+        
+        <!-- Image Type -->
+        <StackPanel Grid.Row="3" Margin="0,0,0,20">
+            <TextBlock Text="Image Type:" Margin="0,0,0,5"/>
+            <ComboBox Name="ImageTypeComboBox" Width="150" HorizontalAlignment="Left">
+                <ComboBoxItem Content="PNG" IsSelected="True"/>
+                <ComboBoxItem Content="JPEG"/>
+                <ComboBoxItem Content="BMP"/>
+            </ComboBox>
+        </StackPanel>
+        
+        <!-- Preset Sizes -->
+        <GroupBox Header="Preset Sizes" Grid.Row="4" Margin="0,0,0,20">
+            <StackPanel Margin="10">
+                <Button Name="Preset800x600" Content="800 x 600 (Standard)" Click="Preset800x600_Click" Margin="0,0,0,5"/>
+                <Button Name="Preset1920x1080" Content="1920 x 1080 (HD)" Click="Preset1920x1080_Click" Margin="0,0,0,5"/>
+                <Button Name="Preset1024x768" Content="1024 x 768 (XGA)" Click="Preset1024x768_Click" Margin="0,0,0,5"/>
+                <Button Name="PresetCustom" Content="Custom Size" Click="PresetCustom_Click"/>
+            </StackPanel>
+        </GroupBox>
+        
+        <!-- Buttons -->
+        <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button Name="OKButton" Content="OK" Width="80" Height="30" Click="OKButton_Click" Margin="0,0,10,0" IsDefault="True"/>
+            <Button Name="CancelButton" Content="Cancel" Width="80" Height="30" Click="CancelButton_Click" IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

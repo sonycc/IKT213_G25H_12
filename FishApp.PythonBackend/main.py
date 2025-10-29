@@ -30,12 +30,23 @@ async def upload_image(file: UploadFile = File(...)):
 @app.post("/rotate")
 async def rotate_image(angle: int):
     global current_image
-    if current_image is None: raise HTTPException(400, "No image uploaded")
-    if angle not in [90,180,270]: raise HTTPException(400, "Angle must be 90, 180, or 270")
-    if angle==90:  current_image = cv2.rotate(current_image, cv2.ROTATE_90_CLOCKWISE)
-    if angle==180: current_image = cv2.rotate(current_image, cv2.ROTATE_180)
-    if angle==270: current_image = cv2.rotate(current_image, cv2.ROTATE_90_COUNTERCLOCKWISE)
-    return FileResponse(save_temp_image(current_image), media_type="image/png", filename="rotated.png")
+    if current_image is None:
+        raise HTTPException(status_code=400, detail="No image uploaded")
+
+    if angle not in [90, 180, 270]:
+        raise HTTPException(status_code=400, detail="Angle must be 90, 180, or 270")
+
+    if angle == 90:
+        rotated = cv2.rotate(current_image, cv2.ROTATE_90_CLOCKWISE)
+    elif angle == 180:
+        rotated = cv2.rotate(current_image, cv2.ROTATE_180)
+    else:  # 270
+        rotated = cv2.rotate(current_image, cv2.ROTATE_90_COUNTERCLOCKWISE)
+
+    current_image = rotated
+    tmp_path = save_temp_image(current_image)
+    return FileResponse(tmp_path, media_type="image/png", filename="rotated.png")
+
 
 @app.post("/grayscale")
 async def grayscale_image():
