@@ -16,54 +16,89 @@
                 <Separator/>
                 <MenuItem Header="Quit" Click="FileQuit_Click"/>
             </MenuItem>
-            
+
             <!-- Clipboard Menu -->
-            <MenuItem Header="Clipboard">
-                <MenuItem Header="Option1"/>
-                <MenuItem Header="Option2"/>
-                <MenuItem Header="Option3"/>
+            <MenuItem Header="_Clipboard">
+                <MenuItem Header="Copy" Click="ClipboardCopy_Click"/>
+                <MenuItem Header="Paste" Click="ClipboardPaste_Click"/>
+                <MenuItem Header="Cut" Click="ClipboardCut_Click"/>
             </MenuItem>
-            
+
             <!-- Image Menu -->
-            <MenuItem Header="Image">
-                <MenuItem Header="Option1"/>
-                <MenuItem Header="Option2"/>
-                <MenuItem Header="Option3"/>
+            <MenuItem Header="_Image">
+                <MenuItem Header="Select Shape">
+                    <MenuItem Header="Rectangular Selection" Click="ImageRectangularSelect_Click"/>
+                    <MenuItem Header="Freeform Selection" Click="ImageFreeformSelect_Click"/>
+                    <MenuItem Header="Polygon Selection" Click="ImagePolygonSelect_Click"/>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="Crop" Click="ImageCrop_Click"/>
+                <MenuItem Header="Resize" Click="ImageResize_Click"/>
+                <MenuItem Header="Rotate">
+                    <MenuItem Header="Rotate 90°" Click="Rotate90Button_Click"/>
+                    <MenuItem Header="Rotate 180°" Click="Rotate180Button_Click"/>
+                    <MenuItem Header="Rotate 270°" Click="Rotate270Button_Click"/>
+                </MenuItem>
+                <MenuItem Header="Flip">
+                    <MenuItem Header="Flip Horizontal" Click="FlipHorizontal_Click"/>
+                    <MenuItem Header="Flip Vertical" Click="FlipVertical_Click"/>
+                </MenuItem>
             </MenuItem>
-            
+
             <!-- Tools Menu -->
-            <MenuItem Header="Tools">
-                <MenuItem Header="Option1"/>
-                <MenuItem Header="Option2"/>
-                <MenuItem Header="Option3"/>
+            <MenuItem Header="_Tools">
+                <MenuItem Header="Zoom In" Click="ZoomIn_Click"/>
+                <MenuItem Header="Zoom Out" Click="ZoomOut_Click"/>
+                <MenuItem Header="Eraser" Click="Eraser_Click"/>
+                <MenuItem Header="Color Picker" Click="ColorPicker_Click"/>
+                <MenuItem Header="Paint Brushes">
+                    <MenuItem Header="Basic Brush" Click="BrushBasic_Click"/>
+                    <MenuItem Header="Texture Brush" Click="BrushTexture_Click"/>
+                    <MenuItem Header="Pattern Brush" Click="BrushPattern_Click"/>
+                </MenuItem>
+                <MenuItem Header="Text Tool" Click="TextTool_Click"/>
+                <Separator/>
+                <MenuItem Header="Gaussian Blur" Click="GaussianBlur_Click"/>
+                <MenuItem Header="Sobel Filter" Click="SobelFilter_Click"/>
+                <MenuItem Header="Binary Filter (Histogram Thresholding)" Click="BinaryFilter_Click"/>
             </MenuItem>
-            
+
             <!-- Shapes Menu -->
-            <MenuItem Header="Shapes">
-                <MenuItem Header="Option1"/>
-                <MenuItem Header="Option2"/>
-                <MenuItem Header="Option3"/>
+            <MenuItem Header="_Shapes">
+                <MenuItem Header="Rectangle" Click="ShapeRectangle_Click"/>
+                <MenuItem Header="Ellipse" Click="ShapeEllipse_Click"/>
+                <MenuItem Header="Line" Click="ShapeLine_Click"/>
+                <MenuItem Header="Polygon" Click="ShapePolygon_Click"/>
+                <Separator/>
+                <MenuItem Header="Outline Color" Click="ShapeOutlineColor_Click"/>
+                <MenuItem Header="Fill Color" Click="ShapeFillColor_Click"/>
             </MenuItem>
-            
+
             <!-- Color Menu -->
-            <MenuItem Header="Color">
-                <MenuItem Header="Option1"/>
-                <MenuItem Header="Option2"/>
-                <MenuItem Header="Option3"/>
+            <MenuItem Header="_Color">
+                <MenuItem Header="Color Palette" Click="ColorPalette_Click"/>
+                <MenuItem Header="Brush Size">
+                    <MenuItem Header="Small" Click="BrushSizeSmall_Click"/>
+                    <MenuItem Header="Medium" Click="BrushSizeMedium_Click"/>
+                    <MenuItem Header="Large" Click="BrushSizeLarge_Click"/>
+                </MenuItem>
             </MenuItem>
-            
-            <!-- Layer Menu -->
-            <MenuItem Header="Layer">
-                <MenuItem Header="Option1"/>
-                <MenuItem Header="Option2"/>
-                <MenuItem Header="Option3"/>
+
+            <!-- Layer Menu (Optional) -->
+            <MenuItem Header="_Layer">
+                <MenuItem Header="New Layer" Click="LayerNew_Click"/>
+                <MenuItem Header="Load Layer" Click="LayerLoad_Click"/>
+                <MenuItem Header="Edit Layer" Click="LayerEdit_Click"/>
+                <MenuItem Header="Select Layer" Click="LayerSelect_Click"/>
+                <MenuItem Header="Delete Layer" Click="LayerDelete_Click"/>
+                <MenuItem Header="Rename Layer" Click="LayerRename_Click"/>
             </MenuItem>
-            
-            <!-- Snapchat-like Filters Menu -->
-            <MenuItem Header="Filters">
-                <MenuItem Header="Option1"/>
-                <MenuItem Header="Option2"/>
-                <MenuItem Header="Option3"/>
+
+            <!-- Filters Menu (Optional Snapchat-like) -->
+            <MenuItem Header="_Filters">
+                <MenuItem Header="Lightning Filter" Click="FilterLightning_Click"/>
+                <MenuItem Header="Fire Filter" Click="FilterFire_Click"/>
+                <MenuItem Header="Bubbles Filter 🐟" Click="FilterBubbles_Click"/>
             </MenuItem>
         </Menu>
         

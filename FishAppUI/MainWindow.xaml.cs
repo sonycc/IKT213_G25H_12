@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,9 +7,9 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Windows;
-using Microsoft.Win32;
-using System.Windows.Media.Imaging;
+using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace FishAppUI
 {
@@ -236,7 +237,7 @@ namespace FishAppUI
         private void SaveBitmapImageToFile(BitmapImage bitmap, string filePath)
         {
             var fileExt = Path.GetExtension(filePath).ToLower();
-            
+
             BitmapEncoder encoder = fileExt switch
             {
                 ".jpg" or ".jpeg" => new JpegBitmapEncoder(),
@@ -325,7 +326,7 @@ namespace FishAppUI
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "PNG Image|*.png|JPEG Image|*.jpg|BMP Image|*.bmp|All Files|*.*";
             saveFileDialog.DefaultExt = "png";
-            
+
             if (saveFileDialog.ShowDialog() == true)
             {
                 currentImagePath = saveFileDialog.FileName;
@@ -343,7 +344,7 @@ namespace FishAppUI
                                $"DPI Y: {bitmap.DpiY}\n" +
                                $"Format: {bitmap.Format}\n" +
                                $"Path: {currentImagePath ?? "Not saved"}";
-                
+
                 MessageBox.Show(properties, "Image Properties", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
@@ -364,7 +365,7 @@ namespace FishAppUI
             {
                 var bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
                 var pixels = new byte[width * height * 4];
-                
+
                 // Fill with white background
                 for (int i = 0; i < pixels.Length; i += 4)
                 {
@@ -373,9 +374,9 @@ namespace FishAppUI
                     pixels[i + 2] = 255; // Red
                     pixels[i + 3] = 255; // Alpha
                 }
-                
+
                 bitmap.WritePixels(new Int32Rect(0, 0, width, height), pixels, width * 4, 0);
-                
+
                 ProcessedImage.Source = bitmap;
                 currentImagePath = null; // New image has no path yet
                 imageHistory.Clear();
@@ -398,7 +399,7 @@ namespace FishAppUI
                 bitmap.CacheOption = BitmapCacheOption.OnLoad;
                 bitmap.EndInit();
                 bitmap.Freeze();
-                
+
                 ProcessedImage.Source = bitmap;
                 currentImagePath = filePath;
                 imageHistory.Clear();
@@ -430,5 +431,54 @@ namespace FishAppUI
                 MessageBox.Show("No image to save.", "Save Error", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
+
+
+        private void ClipboardCopy_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void ClipboardPaste_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void ClipboardCut_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+
+        private void ImageRectangularSelect_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void ImageFreeformSelect_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void ImagePolygonSelect_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void ImageCrop_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void ImageResize_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void FlipHorizontal_Click(object sender, RoutedEventArgs e) => ApplyOperation("flip_horizontal");
+        private void FlipVertical_Click(object sender, RoutedEventArgs e) => ApplyOperation("flip_vertical");
+
+        private void ZoomIn_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void ZoomOut_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void Eraser_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void ColorPicker_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void BrushBasic_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void BrushTexture_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void BrushPattern_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void TextTool_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private async void GaussianBlur_Click(object sender, RoutedEventArgs e) => await ApplyOperation("gaussian_blur?k_size=5");
+        private async void SobelFilter_Click(object sender, RoutedEventArgs e) => await ApplyOperation("sobel?k_size=3");
+        private async void BinaryFilter_Click(object sender, RoutedEventArgs e) => await ApplyOperation("binary");
+
+        private void ShapeRectangle_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void ShapeEllipse_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void ShapeLine_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void ShapePolygon_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void ShapeOutlineColor_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void ShapeFillColor_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+
+        private void ColorPalette_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void BrushSizeSmall_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void BrushSizeMedium_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void BrushSizeLarge_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+
+        private void LayerNew_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void LayerLoad_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void LayerEdit_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void LayerSelect_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void LayerDelete_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void LayerRename_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+
+        private void FilterLightning_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void FilterFire_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void FilterBubbles_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+
     }
 }
