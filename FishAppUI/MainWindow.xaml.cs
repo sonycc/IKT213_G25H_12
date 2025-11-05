@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection.Emit;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -433,49 +434,51 @@ namespace FishAppUI
         }
 
 
-        private void ClipboardCopy_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void ClipboardPaste_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void ClipboardCut_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void ClipboardCopy_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
+        private void ClipboardPaste_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
+        private void ClipboardCut_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
 
-        private void ImageRectangularSelect_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void ImageFreeformSelect_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void ImagePolygonSelect_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void ImageCrop_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void ImageResize_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void ImageRectangularSelect_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
+        private void ImageFreeformSelect_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
+        private void ImagePolygonSelect_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
+        private void ImageCrop_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
+        private void ImageResize_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
         private void FlipHorizontal_Click(object sender, RoutedEventArgs e) => ApplyOperation("flip_horizontal");
         private void FlipVertical_Click(object sender, RoutedEventArgs e) => ApplyOperation("flip_vertical");
 
-        private void ZoomIn_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void ZoomOut_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void Eraser_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void ColorPicker_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void BrushBasic_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void BrushTexture_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void BrushPattern_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void TextTool_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void ZoomIn_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
+        private void ZoomOut_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
+        private void Eraser_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
+        private void ColorPicker_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
+        private void BrushBasic_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
+        private void BrushTexture_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
+        private void BrushPattern_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
+        private void TextTool_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
         private async void GaussianBlur_Click(object sender, RoutedEventArgs e) => await ApplyOperation("gaussian_blur?k_size=5");
         private async void SobelFilter_Click(object sender, RoutedEventArgs e) => await ApplyOperation("sobel?k_size=3");
         private async void BinaryFilter_Click(object sender, RoutedEventArgs e) => await ApplyOperation("binary");
 
-        private void ShapeRectangle_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void ShapeEllipse_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void ShapeLine_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void ShapePolygon_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void ShapeOutlineColor_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void ShapeFillColor_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void ShapeRectangle_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
+        private void ShapeEllipse_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
+        private void ShapeLine_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
+        private void ShapePolygon_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
+        private void ShapeOutlineColor_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
+        private void ShapeFillColor_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
 
-        private void ColorPalette_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void BrushSizeSmall_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void BrushSizeMedium_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void BrushSizeLarge_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void ColorPalette_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
+        private void BrushSizeSmall_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
+        private void BrushSizeMedium_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
+        private void BrushSizeLarge_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
 
-        private void LayerNew_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void LayerLoad_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void LayerEdit_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void LayerSelect_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void LayerDelete_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void LayerRename_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        //Layer Menu(Optional)
+        private void LayerNew_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
+        private void LayerLoad_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
+        private void LayerEdit_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
+        private void LayerSelect_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
+        private void LayerDelete_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
+        private void LayerRename_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
 
+        //Filter Menu(extremely Optional)
         private void FilterLightning_Click(object sender, RoutedEventArgs e) { /* TODO */ }
         private void FilterFire_Click(object sender, RoutedEventArgs e) { /* TODO */ }
         private void FilterBubbles_Click(object sender, RoutedEventArgs e) { /* TODO */ }
