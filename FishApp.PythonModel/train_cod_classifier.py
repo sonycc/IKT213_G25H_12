@@ -67,17 +67,22 @@ def main():
     if best_path.exists():
         model.load_state_dict(torch.load(best_path, map_location=device))
     model.eval()
-
-    dummy = torch.randn(1,3,224,224, device=device)
+    model_cpu = model.to("cpu")
+    dummy = torch.randn(1, 3, 224, 224, device="cpu")
     onnx_path = ROOT / "cod_classifier.onnx"
 
-    torch.onnx.export(
-        model, dummy, str(onnx_path),
-        input_names=["input"], output_names=["logits"],
-        opset_version=18,
-        do_constant_folding=True,
-        dynamic_shapes={"x": {0: "batch"}}
-    )
+    with torch.inference_mode():
+        torch.onnx.export(
+            model_cpu, dummy, str(onnx_path),
+            input_names=["input"], output_names=["logits"],
+            opset_version=18,
+            do_constant_folding=True,
+            dynamic_axes={
+                "input": {0: "batch"},
+                "logits": {0: "batch"},
+            },
+            training=torch.onnx.TrainingMode.EVAL
+        )
 
     idx_to_class = {v:k for k,v in train_ds.class_to_idx.items()}
     with open(ROOT/"classes.txt","w", encoding="utf-8") as f:

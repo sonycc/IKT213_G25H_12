@@ -32,13 +32,11 @@ def main(split=0.8):
     c_train = int(len(cod)*split)
     n_train = int(len(notf)*split)
 
-    # Create dir
     (OUT/"train"/"cod").mkdir(parents=True, exist_ok=True)
     (OUT/"train"/"not_cod").mkdir(parents=True, exist_ok=True)
     (OUT/"val"/"cod").mkdir(parents=True, exist_ok=True)
     (OUT/"val"/"not_cod").mkdir(parents=True, exist_ok=True)
 
-    # Copy files
     copy_subset(cod[:c_train],        OUT/"train"/"cod")
     copy_subset(cod[c_train:],        OUT/"val"/"cod")
     copy_subset(notf[:n_train],       OUT/"train"/"not_cod")
