@@ -33,7 +33,7 @@ async def onnx():
     global current_image
     check_image()
 
-    preds = predict(current_image, model_session=session)[:3]
+    preds = predict(current_image, model_session=session)[:2]
     return {
         "onnx": {
             "predictions": [
