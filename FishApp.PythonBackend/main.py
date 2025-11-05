@@ -8,7 +8,7 @@ from func.imageMenuFunc import (rotate_image_func, crop_image_func,
                                 flip_horizontal_func, flip_vertical_func)
 from func.toolsMenuFunc import (grayscale_image_func, gaussian_blur_func,
                                 sobel_func, binary_filter_func)
-from func.onnxFunc import predict
+from func.onnxFunc import predict, session
 
 app = FastAPI(title="Fish Image Processing API")
 current_image = None
@@ -30,11 +30,15 @@ async def ping():
 
 @app.get("/ONNX")
 async def onnx():
-    # Placeholder response shaped similar to your example
+    global current_image
+    check_image()
+
+    preds = predict(current_image, model_session=session)[:3]
     return {
-        "not implementet": {
-            "detected": ["name"],     # replace with actual detected label
-            "certainty": "75%"        # replace with actual certainty (as percent string)
+        "onnx": {
+            "predictions": [
+                {"label": p["label"], "certainty": round(p["score"], 2)} for p in preds
+            ]
         }
     }
 
@@ -51,15 +55,6 @@ async def upload_image(file: UploadFile = File(...)):
     current_image = img
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename=file.filename)
-
-
-@app.post("/predict")
-async def predict_image():
-    global current_image
-    check_image()
-
-    output = predict(current_image)
-    return JSONResponse({"predictions": output})
 
 
 @app.post("/rotate")
