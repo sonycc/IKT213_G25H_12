@@ -3,7 +3,7 @@ from PIL import Image
 import numpy as np
 import onnxruntime as ort
 
-session = ort.InferenceSession("models/resnet50-v2-7.onnx")
+session = ort.InferenceSession("../FishApp.PythonModel/cod_classifier.onnx")
 input_name = session.get_inputs()[0].name
 output_name = session.get_outputs()[0].name
 
@@ -29,8 +29,7 @@ def predict(image, model_session=None):
     probs = exp / np.sum(exp)
     top = np.argsort(-probs)[:5]
 
-    # read the labels
-    with open("models/synset.txt", "r") as f:
+    with open("../FishApp.PythonModel/classes.txt", "r") as f:
         labels = [line.strip() for line in f.readlines()]
 
     output = [

@@ -27,10 +27,16 @@ def sobel_func(image, k_size: int):
 
 def binary_filter_func(image):
     gray = grayscale_image_func(image)
+
+    # optional / can improve quality
+    gray_blur = cv2.GaussianBlur(gray, (5, 5), 0)
+
     binary = cv2.adaptiveThreshold(
-        gray, 255,
+        gray_blur, 255,
         cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
         cv2.THRESH_BINARY,
+        # For finer detail: lower blockSize (must be odd), For smoother global effect: increase it
+        # for C: if too bright of dark, increase or reduce
         21, 5
     )
     image[:] = binary
