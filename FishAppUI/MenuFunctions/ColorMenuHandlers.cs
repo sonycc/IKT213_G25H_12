@@ -44,6 +44,7 @@ namespace FishAppUI.MenuFunctions
             _mainWindow.OpenColorPalette();
         }
 
+
         public void BrushSizeSmall_Click(object sender, RoutedEventArgs e)
         {
             _mainWindow.SetBrushSize(BrushSize.Small);

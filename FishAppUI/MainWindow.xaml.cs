@@ -23,6 +23,23 @@ namespace FishAppUI
         private readonly HttpClient httpClient = new HttpClient { BaseAddress = new Uri("http://127.0.0.1:5000/") };
         private readonly Stack<byte[]> imageHistory = new Stack<byte[]>();
         private byte[]? originalProcessedImageBytes;
+        
+        public BrushSize CurrentBrushSize { get; private set; } = BrushSize.Small;
+
+        public void SetBrushSize(BrushSize size)
+        {
+            CurrentBrushSize = size;
+            // TODOO update UI brush icon
+        }
+
+
+        public enum BrushSize
+        {
+            Small,
+            Medium,
+            Large
+        }
+
 
         public MainWindow()
         {
@@ -99,20 +116,6 @@ namespace FishAppUI
         {
             await UpdateButtonStates();
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         public void SaveImageToFile(string filePath)
         {
@@ -420,19 +423,14 @@ namespace FishAppUI
             throw new NotImplementedException();
         }
 
-        internal void SetBrushSize()
+        internal void SetBrushSize(MenuFunctions.BrushSize small)
         {
             throw new NotImplementedException();
         }
     }
 
 
-    public enum BrushSize
-    {
-        Small,
-        Medium,
-        Large
-    }
+
 
 
 

@@ -40,10 +40,28 @@ namespace FishAppUI.MenuFunctions
 
         public async void FileNew_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new NewImageDialog();
+            var dialog = new NewImageDialog { Owner = _mainWindow };
+
             if (dialog.ShowDialog() == true)
             {
-                await _mainWindow.CreateNewImage(dialog.Width, dialog.Height, dialog.ImageType);
+                int width = dialog.ImageWidth;
+                int height = dialog.ImageHeight;
+                string imageType = dialog.ImageType;
+
+                try
+                {
+                    // Reuse MainWindow’s ApplyOperation for backend call
+                    string endpoint = $"newImage?width={width}&height={height}&type={imageType}";
+                    await _mainWindow.ApplyOperation(endpoint);
+
+                    MessageBox.Show("New image created successfully!", "Success",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Failed to create new image:\n{ex.Message}",
+                        "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
