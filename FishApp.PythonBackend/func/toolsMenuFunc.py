@@ -26,7 +26,10 @@ def sobel_func(image, k_size: int):
 
 
 def binary_filter_func(image):
-    gray = grayscale_image_func(image)
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    if gray.dtype != "uint8":
+        gray = cv2.normalize(gray, None, 0, 255, cv2.NORM_MINMAX).astype("uint8")
 
     # optional / can improve quality
     gray_blur = cv2.GaussianBlur(gray, (5, 5), 0)
@@ -39,6 +42,12 @@ def binary_filter_func(image):
         # for C: if too bright of dark, increase or reduce
         21, 5
     )
-    image[:] = binary
+
+    binary_bgr = cv2.cvtColor(binary, cv2.COLOR_GRAY2BGR)
+    image[:] = binary_bgr
     return image
 
+
+def textbox_func(image, pt1: float, pt2: float, text: str):
+    image = cv2.putText(image, text, (pt1, pt2), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 0), 2)
+    return image

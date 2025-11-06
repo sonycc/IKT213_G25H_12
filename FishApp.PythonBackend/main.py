@@ -7,7 +7,10 @@ import tempfile
 from func.imageMenuFunc import (rotate_image_func, crop_image_func,
                                 flip_horizontal_func, flip_vertical_func)
 from func.toolsMenuFunc import (grayscale_image_func, gaussian_blur_func,
-                                sobel_func, binary_filter_func)
+                                sobel_func, binary_filter_func, textbox_func)
+from func.shapesMenuFunc import (rectangle_func, circle_func,
+                                 ellipse_func, polygon_func, line_func)
+
 from func.onnxFunc import predict, session
 
 app = FastAPI(title="Fish Image Processing API")
@@ -81,8 +84,18 @@ async def grayscale_image():
     return FileResponse(tmp_path, media_type="image/png", filename="grayscale.png")
 
 
+@app.post("/textbox")
+async def textbox_image(pt1, pt2, text):
+    global current_image
+    check_image()
+
+    current_image = textbox_func(current_image, pt1, pt2, text)
+    tmp_path = save_temp_image(current_image)
+    return FileResponse(tmp_path, media_type="image/png", filename="textbox.png")
+
+
 @app.post("/crop")
-async def crop_image(x1:int, y1:int, x2:int, y2:int):
+async def crop_image(x1, y1, x2, y2):
     global current_image
     check_image()
 
@@ -134,6 +147,7 @@ async def sobel(k_size: int):
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="gaussian_blur.png")
 
+
 @app.post("/binary")
 async def binary_filter():
     global current_image
@@ -142,6 +156,56 @@ async def binary_filter():
     current_image = binary_filter_func(current_image)
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="binary_filter.png")
+
+
+@app.post("/rectangle")
+async def rectangle(pt1, pt2):
+    global current_image
+    check_image()
+
+    current_image = rectangle_func(current_image, pt1, pt2)
+    tmp_path = save_temp_image(current_image)
+    return FileResponse(tmp_path, media_type="image/png", filename="rectangle.png")
+
+
+@app.post("/circle")
+async def circle(pt1):
+    global current_image
+    check_image()
+
+    current_image = circle_func(current_image, pt1)
+    tmp_path = save_temp_image(current_image)
+    return FileResponse(tmp_path, media_type="image/png", filename="circle.png")
+
+
+@app.post("/polygon")
+async def polygon(array):
+    global current_image
+    check_image()
+
+    current_image = polygon_func(current_image, array)
+    tmp_path = save_temp_image(current_image)
+    return FileResponse(tmp_path, media_type="image/png", filename="polygon.png")
+
+
+@app.post("/ellipse")
+async def ellipse(array, pt1):
+    global current_image
+    check_image()
+
+    current_image = ellipse_func(current_image, pt1)
+    tmp_path = save_temp_image(current_image)
+    return FileResponse(tmp_path, media_type="image/png", filename="ellipse.png")
+
+
+@app.post("/line")
+async def line(pt1, pt2):
+    global current_image
+    check_image()
+
+    current_image = line_func(current_image, pt1, pt2)
+    tmp_path = save_temp_image(current_image)
+    return FileResponse(tmp_path, media_type="image/png", filename="line.png")
 
 
 @app.get("/download")
