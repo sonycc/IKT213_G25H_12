@@ -19,15 +19,21 @@ namespace FishAppUI.MenuFunctions
     internal class ClipboardMenuHandlers
     {
 
+        public readonly MainWindow _mainWindow;
+
+        public ClipboardMenuHandlers(MainWindow mainWindow)
+        {
+            _mainWindow = mainWindow;
+        }
+
 
         // <MenuItem Header = "Copy"   Click="ClipboardCopy_Click"/>
-        private void ClipboardCopy_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
+        public void ClipboardCopy_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
 
         // <MenuItem Header = "Paste"  Click="ClipboardPaste_Click"/>
-        private void ClipboardPaste_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
+        public void ClipboardPaste_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
 
         // <MenuItem Header = "Cut"    Click="ClipboardCut_Click"/>
-        private void ClipboardCut_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
-
+        public void ClipboardCut_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
     }
 }

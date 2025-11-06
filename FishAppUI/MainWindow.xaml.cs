@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using FishAppUI.MenuFunctions;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,8 +18,8 @@ namespace FishAppUI
 {
     public partial class MainWindow : Window
     {
-        private string? selectedFilePath;
-        private string? currentImagePath; // Path for save functionality
+        public string? selectedFilePath;
+        public string? currentImagePath; // Path for save functionality
         private readonly HttpClient httpClient = new HttpClient { BaseAddress = new Uri("http://127.0.0.1:5000/") };
         private readonly Stack<byte[]> imageHistory = new Stack<byte[]>();
         private byte[]? originalProcessedImageBytes;
@@ -27,12 +28,110 @@ namespace FishAppUI
         {
             InitializeComponent();
             InitializeButtonStates();
+
+
+            // File menu
+            var fileMenuHandlers = new FileMenuHandlers(this);
+                FileNewMenuItem.Click += fileMenuHandlers.FileNew_Click;
+                FileOpenMenuItem.Click += fileMenuHandlers.FileOpen_Click;
+                FileSaveMenuItem.Click += fileMenuHandlers.FileSave_Click;
+                FileSaveAsMenuItem.Click += fileMenuHandlers.FileSaveAs_Click;
+                FilePropertiesMenuItem.Click += fileMenuHandlers.FileProperties_Click;
+                FileQuitMenuItem.Click += fileMenuHandlers.FileQuit_Click;
+
+            // Clipboard menu
+            var clipboardMenuHandlers = new ClipboardMenuHandlers(this);
+                ClipboardCopyMenuItem.Click += clipboardMenuHandlers.ClipboardCopy_Click;
+                ClipboardPasteMenuItem.Click += clipboardMenuHandlers.ClipboardPaste_Click;
+                ClipboardCutMenuItem.Click += clipboardMenuHandlers.ClipboardCut_Click;
+
+
+
+            // Image menu
+            var imageMenuHandlers = new ImageMenuHandlers(this);
+                RectangularSelectMenuItem.Click += imageMenuHandlers.ImageRectangularSelect_Click;
+                FreeformSelectMenuItem.Click += imageMenuHandlers.ImageFreeformSelect_Click;
+                PolygonSelectMenuItem.Click += imageMenuHandlers.ImagePolygonSelect_Click;
+                CropMenuItem.Click += imageMenuHandlers.ImageCrop_Click;
+                ResizeMenuItem.Click += imageMenuHandlers.ImageResize_Click;
+                Rotate90MenuItem.Click += imageMenuHandlers.Rotate90Button_Click;
+                Rotate180MenuItem.Click += imageMenuHandlers.Rotate180Button_Click;
+                Rotate270MenuItem.Click += imageMenuHandlers.Rotate270Button_Click;
+                FlipHorizontalMenuItem.Click += imageMenuHandlers.FlipHorizontal_Click;
+                FlipVerticalMenuItem.Click += imageMenuHandlers.FlipVertical_Click;
+
+
+            // Tools menu
+            var toolsMenuHandlers = new ToolsMenuHandlers(this);
+                ZoomInMenuItem.Click += toolsMenuHandlers.ZoomIn_Click;
+                ZoomOutMenuItem.Click += toolsMenuHandlers.ZoomOut_Click;
+                EraserMenuItem.Click += toolsMenuHandlers.Eraser_Click;
+                ColorPickerMenuItem.Click += toolsMenuHandlers.ColorPicker_Click;
+                BrushBasicMenuItem.Click += toolsMenuHandlers.BrushBasic_Click;
+                BrushTextureMenuItem.Click += toolsMenuHandlers.BrushTexture_Click;
+                BrushPatternMenuItem.Click += toolsMenuHandlers.BrushPattern_Click;
+                TextToolMenuItem.Click += toolsMenuHandlers.TextTool_Click;
+                GaussianBlurMenuItem.Click += toolsMenuHandlers.GaussianBlur_Click;
+                SobelFilterMenuItem.Click += toolsMenuHandlers.SobelFilter_Click;
+                BinaryFilterMenuItem.Click += toolsMenuHandlers.BinaryFilter_Click;
+
+
+            // Shapes menu
+            var shapesMenuHandlers = new ShapesMenuHandlers(this);
+                ShapeRectangleMenuItem.Click += shapesMenuHandlers.ShapeRectangle_Click;
+                ShapeEllipseMenuItem.Click += shapesMenuHandlers.ShapeEllipse_Click;
+                ShapeLineMenuItem.Click += shapesMenuHandlers.ShapeLine_Click;
+                ShapePolygonMenuItem.Click += shapesMenuHandlers.ShapePolygon_Click;
+                ShapeOutlineColorMenuItem.Click += shapesMenuHandlers.ShapeOutlineColor_Click;
+                ShapeFillColorMenuItem.Click += shapesMenuHandlers.ShapeFillColor_Click;
+
+            // Color menu
+            var colorMenuHandlers = new ColorMenuHandlers(this);
+                ColorPaletteMenuItem.Click += colorMenuHandlers.ColorPalette_Click;
+                BrushSizeSmallMenuItem.Click += colorMenuHandlers.BrushSizeSmall_Click;
+                BrushSizeMediumMenuItem.Click += colorMenuHandlers.BrushSizeMedium_Click;
+                BrushSizeLargeMenuItem.Click += colorMenuHandlers.BrushSizeLarge_Click;
+
         }
 
         // Initialize button states on startup
         private async void InitializeButtonStates()
         {
             await UpdateButtonStates();
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public void SaveImageToFile(string filePath)
+        {
+            if (ProcessedImage.Source is BitmapImage bitmap)
+            {
+                try
+                {
+                    SaveBitmapImageToFile(bitmap, filePath);
+                    MessageBox.Show("Image saved successfully!", "Save Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error saving image: {ex.Message}", "Save Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("No image to save.", "Save Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         // Select an image from disk
@@ -89,7 +188,7 @@ namespace FishAppUI
         }
 
         // Helper to call backend endpoints for operations
-        private async Task ApplyOperation(string endpoint)
+        public async Task ApplyOperation(string endpoint)
         {
             try
             {
@@ -228,7 +327,6 @@ namespace FishAppUI
         {
             using var ms = new MemoryStream();
             var encoder = new PngBitmapEncoder();
-            var encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(bitmap));
             encoder.Save(ms);
             return Task.FromResult(ms.ToArray());
@@ -293,7 +391,8 @@ namespace FishAppUI
 
 
 
-        private async Task LoadImageFromFile(string filePath)
+
+        public async Task LoadImageFromFile(string filePath)
         {
             try
             {
@@ -316,42 +415,25 @@ namespace FishAppUI
             }
         }
 
-        private void SaveImageToFile(string filePath)
+        internal void OpenColorPalette()
         {
-            if (ProcessedImage.Source is BitmapImage bitmap)
-            {
-                try
-                {
-                    SaveBitmapImageToFile(bitmap, filePath);
-                    MessageBox.Show("Image saved successfully!", "Save Complete", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error saving image: {ex.Message}", "Save Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            else
-            {
-                MessageBox.Show("No image to save.", "Save Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
+            throw new NotImplementedException();
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        internal void SetBrushSize()
+        {
+            throw new NotImplementedException();
+        }
     }
+
+
+    public enum BrushSize
+    {
+        Small,
+        Medium,
+        Large
+    }
+
+
+
 }

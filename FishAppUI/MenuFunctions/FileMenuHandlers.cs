@@ -28,44 +28,52 @@ namespace FishAppUI.MenuFunctions
     internal class FileMenuHandlers
     {
 
+        public readonly MainWindow _mainWindow;
+
+        public FileMenuHandlers(MainWindow mainWindow)
+        {
+            _mainWindow = mainWindow;
+        }
+
+
         // <MenuItem Header="New"          Click="FileNew_Click"/> 
 
-        private async void FileNew_Click(object sender, RoutedEventArgs e)
+        public async void FileNew_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new NewImageDialog();
             if (dialog.ShowDialog() == true)
             {
-                await CreateNewImage(dialog.Width, dialog.Height, dialog.ImageType);
+                await _mainWindow.CreateNewImage(dialog.Width, dialog.Height, dialog.ImageType);
             }
         }
 
         // <MenuItem Header = "Open"         Click="FileOpen_Click"/>
 
-        private async void FileOpen_Click(object sender, RoutedEventArgs e)
+        public async void FileOpen_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif|All Files|*.*";
             if (openFileDialog.ShowDialog() == true)
             {
-                await LoadImageFromFile(openFileDialog.FileName);
+                await _mainWindow.LoadImageFromFile(openFileDialog.FileName);
             }
         }
 
         // <MenuItem Header = "Save"         Click="FileSave_Click"/>
-        private void FileSave_Click(object sender, RoutedEventArgs e)
+        public void FileSave_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(currentImagePath))
+            if (string.IsNullOrEmpty(_mainWindow.currentImagePath))
             {
                 FileSaveAs_Click(sender, e);
             }
             else
             {
-                SaveImageToFile(currentImagePath);
+                _mainWindow.SaveImageToFile(_mainWindow.currentImagePath);
             }
         }
 
         // <MenuItem Header = "Save As"      Click="FileSaveAs_Click"/>
-        private void FileSaveAs_Click(object sender, RoutedEventArgs e)
+        public void FileSaveAs_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "PNG Image|*.png|JPEG Image|*.jpg|BMP Image|*.bmp|All Files|*.*";
@@ -73,22 +81,22 @@ namespace FishAppUI.MenuFunctions
 
             if (saveFileDialog.ShowDialog() == true)
             {
-                currentImagePath = saveFileDialog.FileName;
-                SaveImageToFile(currentImagePath);
+                _mainWindow.currentImagePath = saveFileDialog.FileName;
+                _mainWindow.SaveImageToFile(_mainWindow.currentImagePath);
             }
         }
 
         // <MenuItem Header = "Properties"   Click="FileProperties_Click"/>
-        private void FileProperties_Click(object sender, RoutedEventArgs e)
+        public void FileProperties_Click(object sender, RoutedEventArgs e)
         {
-            if (ProcessedImage.Source is BitmapImage bitmap)
+            if (_mainWindow.ProcessedImage.Source is BitmapImage bitmap)
             {
                 var properties = $"Width: {bitmap.PixelWidth}px\n" +
                                $"Height: {bitmap.PixelHeight}px\n" +
                                $"DPI X: {bitmap.DpiX}\n" +
                                $"DPI Y: {bitmap.DpiY}\n" +
                                $"Format: {bitmap.Format}\n" +
-                               $"Path: {currentImagePath ?? "Not saved"}";
+                               $"Path: {_mainWindow.currentImagePath ?? "Not saved"}";
 
                 MessageBox.Show(properties, "Image Properties", MessageBoxButton.OK, MessageBoxImage.Information);
             }
@@ -99,19 +107,10 @@ namespace FishAppUI.MenuFunctions
         }
 
         // <MenuItem Header = "Quit"         Click="FileQuit_Click"/>
-        private void FileQuit_Click(object sender, RoutedEventArgs e)
+        public void FileQuit_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
         }
-
-
-
-
-
-
-
-
-
 
 
     }

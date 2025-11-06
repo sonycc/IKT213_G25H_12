@@ -20,22 +20,46 @@ namespace FishAppUI.MenuFunctions
         </MenuItem>
     </MenuItem>
     */
+
+    public enum BrushSize
+    {
+        Small,
+        Medium,
+        Large
+    }
+
+
     internal class ColorMenuHandlers
     {
 
+        public readonly MainWindow _mainWindow;
 
-        // <MenuItem Header = "Color Palette"    Click="ColorPalette_Click"/>
-        private void ColorPalette_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
+        public ColorMenuHandlers(MainWindow mainWindow)
+        {
+            _mainWindow = mainWindow;
+        }
 
-        // MenuItem Header="Small"        Click="BrushSizeSmall_Click"/>
-        private void BrushSizeSmall_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
+        public void ColorPalette_Click(object sender, RoutedEventArgs e)
+        {
+            _mainWindow.OpenColorPalette();
+        }
 
-        // MenuItem Header = "Medium"       Click="BrushSizeMedium_Click"/>
-        private void BrushSizeMedium_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
+        public void BrushSizeSmall_Click(object sender, RoutedEventArgs e)
+        {
+            _mainWindow.SetBrushSize(BrushSize.Small);
+        }
 
-        // <MenuItem Header = "Large"        Click="BrushSizeLarge_Click"/>
-        private void BrushSizeLarge_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
+        public void BrushSizeMedium_Click(object sender, RoutedEventArgs e)
+        {
+            _mainWindow.SetBrushSize(BrushSize.Medium);
+        }
 
+        public void BrushSizeLarge_Click(object sender, RoutedEventArgs e)
+        {
+            _mainWindow.SetBrushSize(BrushSize.Large);
+        }
 
     }
+
+
 }

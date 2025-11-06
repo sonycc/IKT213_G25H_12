@@ -34,39 +34,46 @@ namespace FishAppUI.MenuFunctions
     {
 
 
+        public readonly MainWindow _mainWindow;
+
+        public ImageMenuHandlers(MainWindow mainWindow)
+        {
+            _mainWindow = mainWindow;
+        }
+
 
         // MenuItem Header = "Rectangular Selection"    Click="ImageRectangularSelect_Click"/>
-        private void ImageRectangularSelect_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
+        public void ImageRectangularSelect_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
 
         // MenuItem Header = "Freeform Selection"       Click="ImageFreeformSelect_Click"/>
-        private void ImageFreeformSelect_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
+        public void ImageFreeformSelect_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
 
         // MenuItem Header = "Polygon Selection"        Click="ImagePolygonSelect_Click"/>
-        private void ImagePolygonSelect_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
+        public void ImagePolygonSelect_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
 
 
         // MenuItem Header = "Crop"                         Click="ImageCrop_Click"/>
-        private void ImageCrop_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
+        public void ImageCrop_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
 
         // MenuItem Header = "Resize"                       Click="ImageResize_Click"/>
-        private void ImageResize_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
+        public void ImageResize_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
 
 
         // MenuItem Header = "Rotate 90°"               Click="Rotate90Button_Click"/>
-        private async void Rotate90Button_Click(object sender, RoutedEventArgs e) => await ApplyOperation("rotate?angle=90");
+        public async void Rotate90Button_Click(object sender, RoutedEventArgs e) => await _mainWindow.ApplyOperation("rotate?angle=90");
 
         // MenuItem Header = "Rotate 180°"              Click="Rotate180Button_Click"/>
-        private async void Rotate180Button_Click(object sender, RoutedEventArgs e) => await ApplyOperation("rotate?angle=180");
+        public async void Rotate180Button_Click(object sender, RoutedEventArgs e) => await _mainWindow.ApplyOperation("rotate?angle=180");
 
         // <MenuItem Header = "Rotate 270°"              Click="Rotate270Button_Click"/>
-        private async void Rotate270Button_Click(object sender, RoutedEventArgs e) => await ApplyOperation("rotate?angle=270");
+        public async void Rotate270Button_Click(object sender, RoutedEventArgs e) => await _mainWindow.ApplyOperation("rotate?angle=270");
 
 
 
         // < MenuItem Header = "Flip Horizontal"          Click="FlipHorizontal_Click"/>
-        private void FlipHorizontal_Click(object sender, RoutedEventArgs e) => ApplyOperation("flip_horizontal");
+        public void FlipHorizontal_Click(object sender, RoutedEventArgs e) => _mainWindow.ApplyOperation("flip_horizontal");
         // MenuItem Header = "Flip Vertical"            Click="FlipVertical_Click"/>
-        private void FlipVertical_Click(object sender, RoutedEventArgs e) => ApplyOperation("flip_vertical");
+        public void FlipVertical_Click(object sender, RoutedEventArgs e) => _mainWindow.ApplyOperation("flip_vertical");
 
 
 

@@ -26,23 +26,32 @@ namespace FishAppUI.MenuFunctions
     internal class ShapesMenuHandlers
     {
 
+        public readonly MainWindow _mainWindow;
+
+        public ShapesMenuHandlers(MainWindow mainWindow)
+        {
+            _mainWindow = mainWindow;
+        }
+
+
+
         // <MenuItem Header = "Rectangle"        Click="ShapeRectangle_Click"/>
-        private void ShapeRectangle_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
+        public void ShapeRectangle_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
 
         // <MenuItem Header = "Ellipse"          Click="ShapeEllipse_Click"/>
-        private void ShapeEllipse_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
+        public void ShapeEllipse_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
 
         // <MenuItem Header = "Line"             Click="ShapeLine_Click"/>
-        private void ShapeLine_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
+        public void ShapeLine_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
 
         // <MenuItem Header = "Polygon"          Click="ShapePolygon_Click"/>
-        private void ShapePolygon_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
+        public void ShapePolygon_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
 
         // <MenuItem Header = "Outline Color"    Click="ShapeOutlineColor_Click"/>
-        private void ShapeOutlineColor_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
+        public void ShapeOutlineColor_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
 
         // <MenuItem Header = "Fill Color"       Click="ShapeFillColor_Click"/>
-        private void ShapeFillColor_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
+        public void ShapeFillColor_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
 
 
     }
