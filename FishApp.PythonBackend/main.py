@@ -7,7 +7,7 @@ import tempfile
 from func.imageMenuFunc import (rotate_image_func, crop_image_func,
                                 flip_horizontal_func, flip_vertical_func)
 from func.toolsMenuFunc import (grayscale_image_func, gaussian_blur_func,
-                                sobel_func, binary_filter_func, textbox_func)
+                                sobel_func, binary_filter_func, textbox_func, color_picker_func)
 from func.shapesMenuFunc import (rectangle_func, circle_func,
                                  ellipse_func, polygon_func, line_func)
 
@@ -85,13 +85,22 @@ async def grayscale_image():
 
 
 @app.post("/textbox")
-async def textbox_image(pt1, pt2, text):
+async def textbox_image(x1, y1, text):
     global current_image
     check_image()
 
-    current_image = textbox_func(current_image, pt1, pt2, text)
+    current_image = textbox_func(current_image, x1, y1, text)
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="textbox.png")
+
+
+@app.post("/color_picker")
+async def color_picker(x1, y1, text):
+    global current_image
+    check_image()
+
+    color = color_picker_func(current_image, x1, y1)
+    return color
 
 
 @app.post("/crop")
@@ -159,21 +168,21 @@ async def binary_filter():
 
 
 @app.post("/rectangle")
-async def rectangle(pt1, pt2):
+async def rectangle(x1, y1, x2, y2):
     global current_image
     check_image()
 
-    current_image = rectangle_func(current_image, pt1, pt2)
+    current_image = rectangle_func(current_image, x1, y1, x2, y2)
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="rectangle.png")
 
 
 @app.post("/circle")
-async def circle(pt1):
+async def circle(x1, y1):
     global current_image
     check_image()
 
-    current_image = circle_func(current_image, pt1)
+    current_image = circle_func(current_image, x1, y1)
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="circle.png")
 
@@ -189,21 +198,21 @@ async def polygon(array):
 
 
 @app.post("/ellipse")
-async def ellipse(array, pt1):
+async def ellipse(x1, y1):
     global current_image
     check_image()
 
-    current_image = ellipse_func(current_image, pt1)
+    current_image = ellipse_func(current_image, x1, y1)
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="ellipse.png")
 
 
 @app.post("/line")
-async def line(pt1, pt2):
+async def line(x1, y1, x2, y2):
     global current_image
     check_image()
 
-    current_image = line_func(current_image, pt1, pt2)
+    current_image = line_func(current_image, x1, y1, x2, y2)
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="line.png")
 

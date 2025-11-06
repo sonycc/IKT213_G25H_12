@@ -48,6 +48,11 @@ def binary_filter_func(image):
     return image
 
 
-def textbox_func(image, pt1: float, pt2: float, text: str):
-    image = cv2.putText(image, text, (pt1, pt2), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 0), 2)
+def textbox_func(image, x1: int, y1: int, text: str):
+    image = cv2.putText(image, text, (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 0), 2)
     return image
+
+
+def color_picker_func(image, x1: int, y1: int):
+    color = image[x1, y1]
+    return color
