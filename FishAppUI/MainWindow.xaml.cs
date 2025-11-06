@@ -12,6 +12,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
+
 namespace FishAppUI
 {
     public partial class MainWindow : Window
@@ -68,9 +69,7 @@ namespace FishAppUI
         }
 
         // Rotate / Grayscale buttons
-        private async void Rotate90Button_Click(object sender, RoutedEventArgs e) => await ApplyOperation("rotate?angle=90");
-        private async void Rotate180Button_Click(object sender, RoutedEventArgs e) => await ApplyOperation("rotate?angle=180");
-        private async void Rotate270Button_Click(object sender, RoutedEventArgs e) => await ApplyOperation("rotate?angle=270");
+
         private async void GrayscaleButton_Click(object sender, RoutedEventArgs e) => await ApplyOperation("grayscale");
 
         private async void OnnxButton_Click(object sender, RoutedEventArgs e)
@@ -229,6 +228,7 @@ namespace FishAppUI
         {
             using var ms = new MemoryStream();
             var encoder = new PngBitmapEncoder();
+            var encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(bitmap));
             encoder.Save(ms);
             return Task.FromResult(ms.ToArray());
@@ -290,105 +290,8 @@ namespace FishAppUI
             return bitmap;
         }
 
-        // File Menu Event Handlers
-        private async void FileNew_Click(object sender, RoutedEventArgs e)
-        {
-            var dialog = new NewImageDialog();
-            if (dialog.ShowDialog() == true)
-            {
-                await CreateNewImage(dialog.Width, dialog.Height, dialog.ImageType);
-            }
-        }
 
-        private async void FileOpen_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif|All Files|*.*";
-            if (openFileDialog.ShowDialog() == true)
-            {
-                await LoadImageFromFile(openFileDialog.FileName);
-            }
-        }
 
-        private void FileSave_Click(object sender, RoutedEventArgs e)
-        {
-            if (string.IsNullOrEmpty(currentImagePath))
-            {
-                FileSaveAs_Click(sender, e);
-            }
-            else
-            {
-                SaveImageToFile(currentImagePath);
-            }
-        }
-
-        private void FileSaveAs_Click(object sender, RoutedEventArgs e)
-        {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "PNG Image|*.png|JPEG Image|*.jpg|BMP Image|*.bmp|All Files|*.*";
-            saveFileDialog.DefaultExt = "png";
-
-            if (saveFileDialog.ShowDialog() == true)
-            {
-                currentImagePath = saveFileDialog.FileName;
-                SaveImageToFile(currentImagePath);
-            }
-        }
-
-        private void FileProperties_Click(object sender, RoutedEventArgs e)
-        {
-            if (ProcessedImage.Source is BitmapImage bitmap)
-            {
-                var properties = $"Width: {bitmap.PixelWidth}px\n" +
-                               $"Height: {bitmap.PixelHeight}px\n" +
-                               $"DPI X: {bitmap.DpiX}\n" +
-                               $"DPI Y: {bitmap.DpiY}\n" +
-                               $"Format: {bitmap.Format}\n" +
-                               $"Path: {currentImagePath ?? "Not saved"}";
-
-                MessageBox.Show(properties, "Image Properties", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            else
-            {
-                MessageBox.Show("No image loaded.", "Properties", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-        }
-
-        private void FileQuit_Click(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown();
-        }
-
-        // Helper methods for File operations
-        private async Task CreateNewImage(int width, int height, string imageType)
-        {
-            try
-            {
-                var bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
-                var pixels = new byte[width * height * 4];
-
-                // Fill with white background
-                for (int i = 0; i < pixels.Length; i += 4)
-                {
-                    pixels[i] = 255;     // Blue
-                    pixels[i + 1] = 255; // Green
-                    pixels[i + 2] = 255; // Red
-                    pixels[i + 3] = 255; // Alpha
-                }
-
-                bitmap.WritePixels(new Int32Rect(0, 0, width, height), pixels, width * 4, 0);
-
-                ProcessedImage.Source = bitmap;
-                currentImagePath = null; // New image has no path yet
-                imageHistory.Clear();
-                originalProcessedImageBytes = null;
-                await UpdateButtonStates();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error creating new image: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
 
         private async Task LoadImageFromFile(string filePath)
         {
@@ -434,54 +337,21 @@ namespace FishAppUI
         }
 
 
-        private void ClipboardCopy_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
-        private void ClipboardPaste_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
-        private void ClipboardCut_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
 
-        private void ImageRectangularSelect_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
-        private void ImageFreeformSelect_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
-        private void ImagePolygonSelect_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
-        private void ImageCrop_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void ImageResize_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void FlipHorizontal_Click(object sender, RoutedEventArgs e) => ApplyOperation("flip_horizontal");
-        private void FlipVertical_Click(object sender, RoutedEventArgs e) => ApplyOperation("flip_vertical");
 
-        private void ZoomIn_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void ZoomOut_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void Eraser_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
-        private void ColorPicker_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void BrushBasic_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
-        private void BrushTexture_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
-        private void BrushPattern_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
-        private void TextTool_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private async void GaussianBlur_Click(object sender, RoutedEventArgs e) => await ApplyOperation("gaussian_blur?k_size=5");
-        private async void SobelFilter_Click(object sender, RoutedEventArgs e) => await ApplyOperation("sobel?k_size=3");
-        private async void BinaryFilter_Click(object sender, RoutedEventArgs e) => await ApplyOperation("binary");
 
-        private void ShapeRectangle_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void ShapeEllipse_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void ShapeLine_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void ShapePolygon_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void ShapeOutlineColor_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
-        private void ShapeFillColor_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
 
-        private void ColorPalette_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
-        private void BrushSizeSmall_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
-        private void BrushSizeMedium_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
-        private void BrushSizeLarge_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
 
-        //Layer Menu(Optional)
-        private void LayerNew_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void LayerLoad_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void LayerEdit_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void LayerSelect_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void LayerDelete_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void LayerRename_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
 
-        //Filter Menu(extremely Optional)
-        private void FilterLightning_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void FilterFire_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void FilterBubbles_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+
+
+
+
+
+
+
+
+
 
     }
 }

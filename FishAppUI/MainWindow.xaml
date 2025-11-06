@@ -98,7 +98,7 @@
             <MenuItem Header="_Filters">
                 <MenuItem Header="Lightning Filter" Click="FilterLightning_Click"/>
                 <MenuItem Header="Fire Filter" Click="FilterFire_Click"/>
-                <MenuItem Header="Bubbles Filter 🐟" Click="FilterBubbles_Click"/>
+                <MenuItem Header="Bubbles Filter" Click="FilterBubbles_Click"/>
             </MenuItem>
         </Menu>
         
