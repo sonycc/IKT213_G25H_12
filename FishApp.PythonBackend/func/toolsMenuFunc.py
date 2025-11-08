@@ -1,5 +1,7 @@
 import cv2
+import numpy as np
 
+current_zoom = 1.0
 
 def grayscale_image_func(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -14,13 +16,17 @@ def gaussian_blur_func(image, k_size: int):
 
 
 def sobel_func(image, k_size: int):
-    image = grayscale_image_func(image)
-    gaussian = gaussian_blur_func(image, k_size)
+    gray = grayscale_image_func(image)
+    gaussian = gaussian_blur_func(gray, k_size)
 
-    sobel_x = cv2.Sobel(gaussian, cv2.CV_64F, 1, 0, 1)
-    sobel_y = cv2.Sobel(gaussian, cv2.CV_64F, 0, 1, 1)
+    sobel_x = cv2.Sobel(gaussian, cv2.CV_64F, 1, 0, ksize=k_size)
+    sobel_y = cv2.Sobel(gaussian, cv2.CV_64F, 0, 1, ksize=k_size)
     image_sobel_magnitude = cv2.magnitude(sobel_x, sobel_y)
     image_sobel_magnitude = cv2.convertScaleAbs(image_sobel_magnitude)
+
+    if len(image.shape) == 3 and image.shape[2] == 3:
+        image_sobel_magnitude = cv2.cvtColor(image_sobel_magnitude, cv2.COLOR_GRAY2BGR)
+
     image[:] = image_sobel_magnitude
     return image
 
@@ -48,11 +54,40 @@ def binary_filter_func(image):
     return image
 
 
-def textbox_func(image, x1: int, y1: int, text: str):
-    image = cv2.putText(image, text, (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 0), 2)
+def textbox_func(image, x1: int, y1: int, x2: int, y2: int, text: str):
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    overlay = image.copy()
+
+    cv2.rectangle(overlay, (x1, y1), (x2, y2), (255, 255, 255), -1)
+    cv2.addWeighted(overlay, 0.5, image, 0.5, 0, image)
+
+    cv2.putText(image, text, (x1 + 10, y2 - 20), font, 1, (0, 0, 0), 2)
+
     return image
 
 
 def color_picker_func(image, x1: int, y1: int):
-    color = image[x1, y1]
-    return color
+    b, g, r = image[y1, x1]
+    return int(r), int(g), int(b)
+
+zoomed = 0
+
+def zoom_in_func(image):
+    global zoomed
+    zoom_factor = 1.2
+    height, width = image.shape[:2]
+
+    new_height = int(height / zoom_factor)
+    new_width = int(width / zoom_factor)
+
+    start_x = (width - new_width) // 2
+    start_y = (height - new_height) // 2
+
+    cropped_image = image[start_y: start_y + new_height, start_x: start_x + new_width]
+
+    zoomed_image = cv2.resize(cropped_image, (width, height), interpolation=cv2.INTER_LINEAR)
+    zoomed += 1
+    return zoomed_image
+
+
+
