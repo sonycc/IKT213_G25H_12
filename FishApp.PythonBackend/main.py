@@ -7,7 +7,8 @@ import tempfile
 from func.imageMenuFunc import (rotate_image_func, crop_image_func,
                                 flip_horizontal_func, flip_vertical_func, resize_func)
 from func.toolsMenuFunc import (grayscale_image_func, gaussian_blur_func,
-                                sobel_func, binary_filter_func, textbox_func, color_picker_func, zoom_in_func, zoom_out_func)
+                                sobel_func, binary_filter_func, textbox_func,
+                                color_picker_func, zoom_in_func, zoom_out_func)
 from func.shapesMenuFunc import (rectangle_func, circle_func,
                                  ellipse_func, polygon_func, line_func)
 

@@ -7,6 +7,7 @@ session = ort.InferenceSession("../FishApp.PythonModel/exports/fish_classifier.o
 input_name = session.get_inputs()[0].name
 output_name = session.get_outputs()[0].name
 
+
 def predict(image, model_session=None):
     # Convert to RGB, PIL uses RBG
     img_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -36,10 +37,4 @@ def predict(image, model_session=None):
         {"label": labels[i], "score": round(float(probs[i]) * 100, 2)}
         for i in top
     ]
-
-    print("Raw model output:", result)
-    print("Softmax probs (top 10):", sorted(probs, reverse=True)[:10])
-
-    print("Output shape:", result.shape)
     return output
-
