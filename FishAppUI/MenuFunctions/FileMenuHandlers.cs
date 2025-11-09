@@ -50,9 +50,9 @@ namespace FishAppUI.MenuFunctions
 
                 try
                 {
-                    // Reuse MainWindow’s ApplyOperation for backend call
+                    // Reuse MainWindow’s ApplyImageOperationAsync for backend call
                     string endpoint = $"newImage?width={width}&height={height}&type={imageType}";
-                    await _mainWindow.ApplyOperation(endpoint);
+                    await _mainWindow.ApplyImageOperationAsync(endpoint);
 
                     MessageBox.Show("New image created successfully!", "Success",
                         MessageBoxButton.OK, MessageBoxImage.Information);
@@ -107,7 +107,7 @@ namespace FishAppUI.MenuFunctions
         // <MenuItem Header = "Properties"   Click="FileProperties_Click"/>
         public void FileProperties_Click(object sender, RoutedEventArgs e)
         {
-            if (_mainWindow.ProcessedImage.Source is BitmapImage bitmap)
+            if (_mainWindow.Canvas.Source is BitmapImage bitmap)
             {
                 var properties = $"Width: {bitmap.PixelWidth}px\n" +
                                $"Height: {bitmap.PixelHeight}px\n" +

@@ -1,20 +1,23 @@
 ﻿<Window x:Class="FishAppUI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="FishApp" Height="956" Width="800">
+        Title="FishApp" Height="1080" Width="1920">
     <DockPanel>
         <!-- Menu Bar -->
         <Menu DockPanel.Dock="Top">
             <!-- File Menu -->
             <MenuItem Header="File">
-                <MenuItem x:Name="FileNewMenuItem" Header="New" />
-                <MenuItem x:Name="FileOpenMenuItem" Header="Open" />
-                <MenuItem x:Name="FileSaveMenuItem" Header="Save" />
-                <MenuItem x:Name="FileSaveAsMenuItem" Header="Save As" />
+                    <MenuItem x:Name="FileNewMenuItem" Header="New" />
+                    <MenuItem x:Name="FileOpenMenuItem" Header="Open" />
+                    <MenuItem x:Name="FileSaveMenuItem" Header="Save" />
+                    <MenuItem x:Name="FileSaveAsMenuItem" Header="Save As" />
                 <Separator/>
-                <MenuItem x:Name="FilePropertiesMenuItem" Header="Properties" />
+                    <MenuItem x:Name="UndoMenuItem" Header="Undo" IsEnabled="False" />
+                    <MenuItem x:Name="ResetMenuItem" Header="Reset Canvas" IsEnabled="False" />
                 <Separator/>
-                <MenuItem x:Name="FileQuitMenuItem" Header="Quit" />
+                    <MenuItem x:Name="FilePropertiesMenuItem" Header="Properties" />
+                <Separator/>
+                    <MenuItem x:Name="FileQuitMenuItem" Header="Quit" />
             </MenuItem>
 
             <!-- Clipboard Menu -->
@@ -59,9 +62,12 @@
                 </MenuItem>
                 <MenuItem x:Name="TextToolMenuItem" Header="Text Tool" />
                 <Separator/>
-                <MenuItem x:Name="GaussianBlurMenuItem" Header="Gaussian Blur" />
-                <MenuItem x:Name="SobelFilterMenuItem" Header="Sobel Filter" />
-                <MenuItem x:Name="BinaryFilterMenuItem" Header="Binary Filter (Histogram Thresholding)" />
+                    <MenuItem x:Name="GrayscaleMenuItem" Header="Grayscale" Click="GrayscaleButton_Click"/>
+                    <MenuItem x:Name="OnnxMenuItem" Header="Run ONNX" Click="OnnxButton_Click"/>
+                <Separator/>
+                    <MenuItem x:Name="GaussianBlurMenuItem" Header="Gaussian Blur" />
+                    <MenuItem x:Name="SobelFilterMenuItem" Header="Sobel Filter" />
+                    <MenuItem x:Name="BinaryFilterMenuItem" Header="Binary Filter (Histogram Thresholding)" />
             </MenuItem>
 
 
@@ -105,64 +111,62 @@
                 <MenuItem x:Name="BubblesFilterMenuItem" Header="Bubbles Filter"/>
             </MenuItem>
         </Menu>
-        
-        <!-- Main Content Area -->
+
+        <!-- Main 3-Column Layout -->
         <Grid Margin="10">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="389*"/>
-        </Grid.ColumnDefinitions>
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="1">
-            <!-- Top Control Buttons -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
-                <Button Name="SelectButton" Width="120" Height="40" Click="SelectButton_Click" Margin="0,0,10,0">
-                    Select Image
-                </Button>
-                <Button Name="UploadButton" Width="120" Height="40" Click="UploadButton_Click" Margin="0,0,10,0" IsEnabled="False">
-                    Upload Image
-                </Button>
-                <Button Name="DownloadButton" Width="120" Height="40" Click="DownloadButton_Click" Margin="0,0,0,0" IsEnabled="False">
-                    Download Image
-                </Button>
-            </StackPanel>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <!-- Top Row -->
+                <RowDefinition Height="*"/>
+                <!-- Main Content Area -->
+            </Grid.RowDefinitions>
 
-            <!-- Original Image Preview -->
-            <Image Name="OriginalImage" Width="400" Height="300" Margin="0,0,0,20"/>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <!-- Left Panel -->
+                <ColumnDefinition Width="6*"/>
+                <!-- Center Canvas -->
+                <ColumnDefinition Width="3*"/>
+                <!-- Right Panel -->
+            </Grid.ColumnDefinitions>
 
-            <!-- Operations -->
-            <TextBlock Text="Operations:" Margin="0,0,0,5" FontWeight="Bold"/>
+            <!-- Top Row -->
+            <Border Grid.Row="0" Grid.ColumnSpan="3"
+            Background="LightGray"
+            BorderBrush="#CCC"
+            BorderThickness="1"
+            CornerRadius="4"
+            Margin="5"
+            Padding="8">
+                <TextBlock Text="Toolbar row"
+                   FontWeight="Bold"
+                   FontSize="14"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"/>
+            </Border>
 
-            
-            <!--
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
-                <Button Name="Rotate90Button" Width="100" Click="Rotate90Button_Click" Margin="0,0,10,0">Rotate 90°</Button>
-                <Button Name="Rotate180Button" Width="100" Click="Rotate180Button_Click" Margin="0,0,10,0">Rotate 180°</Button>
-                <Button Name="Rotate270Button" Width="100" Click="Rotate270Button_Click">Rotate 270°</Button>
-            </StackPanel>
-            -->  
+            <!-- Left Panel -->
+            <Border Grid.Row="1" Grid.Column="0" BorderBrush="#CCC" BorderThickness="1"
+            CornerRadius="4" Margin="10" Background="WhiteSmoke">
+                <StackPanel Margin="10">
+                    <TextBlock Text="Left Panel" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                    <TextBlock Text="Layers info/helper panel." TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
 
-            <Button Name="GrayscaleButton" Width="200" Height="40" Click="GrayscaleButton_Click" Margin="0,0,0,10">
-                Grayscale
-            </Button>
+            <!-- Center Canvas -->
+            <Border Grid.Row="1" Grid.Column="1" BorderBrush="Black" BorderThickness="2" Background="White" Margin="10">
+                <Image Name="Canvas" Stretch="Uniform"/>
+            </Border>
 
-            <Button Name="OnnxButton" Width="200" Height="40" Click="OnnxButton_Click" Margin="0,0,0,10">
-                Run ONNX
-            </Button>
-
-            <!-- Undo and Reset Controls -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
-                <Button Name="UndoButton" Width="100" Height="40" Click="UndoButton_Click" Margin="0,0,10,0" IsEnabled="False">
-                    Undo
-                </Button>
-                <Button Name="ResetButton" Width="100" Height="40" Click="ResetButton_Click" Margin="0,0,0,0" IsEnabled="False">
-                    Reset
-                </Button>
-            </StackPanel>
-
-            <!-- Processed Image Preview -->
-            <TextBlock Text="Result:" Margin="0,0,0,5" FontWeight="Bold"/>
-            <Image Name="ProcessedImage" Width="400" Height="300"/>
-        </StackPanel>
+            <!-- Right Panel -->
+            <Border Grid.Row="1" Grid.Column="2" BorderBrush="#CCC" BorderThickness="1"
+            CornerRadius="4" Margin="10" Background="WhiteSmoke">
+                <StackPanel Margin="10">
+                    <TextBlock Text="ONNX Fish Detector" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                    <TextBlock Text="This box will show detecton data." TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
         </Grid>
     </DockPanel>
 </Window>

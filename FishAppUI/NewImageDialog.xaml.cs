@@ -5,15 +5,15 @@ namespace FishAppUI
 {
     public partial class NewImageDialog : Window
     {
-        public int Width { get; private set; }
-        public int Height { get; private set; }
+        public int ImageWidth { get; private set; }
+        public int ImageHeight { get; private set; }
         public string ImageType { get; private set; }
 
         public NewImageDialog()
         {
             InitializeComponent();
-            Width = 800;
-            Height = 600;
+            ImageWidth = 800;
+            ImageHeight = 600;
             ImageType = "PNG";
         }
 
@@ -46,8 +46,8 @@ namespace FishAppUI
                 int.TryParse(HeightTextBox.Text, out int height) &&
                 width > 0 && height > 0)
             {
-                Width = width;
-                Height = height;
+                ImageWidth = width;
+                ImageHeight = height;
                 ImageType = ((System.Windows.Controls.ComboBoxItem)ImageTypeComboBox.SelectedItem)?.Content?.ToString() ?? "PNG";
                 DialogResult = true;
                 Close();

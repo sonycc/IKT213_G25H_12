@@ -70,13 +70,13 @@ namespace FishAppUI.MenuFunctions
         public void TextTool_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
 
         // <MenuItem Header = "Gaussian Blur"                            Click="GaussianBlur_Click"/>
-        public async void GaussianBlur_Click(object sender, RoutedEventArgs e) => await _mainWindow.ApplyOperation("gaussian_blur?k_size=5");
+        public async void GaussianBlur_Click(object sender, RoutedEventArgs e) => await _mainWindow.ApplyImageOperationAsync("gaussian_blur?k_size=5");
 
         // <MenuItem Header = "Sobel Filter"                             Click="SobelFilter_Click"/>
-        public async void SobelFilter_Click(object sender, RoutedEventArgs e) => await _mainWindow.ApplyOperation("sobel?k_size=3");
+        public async void SobelFilter_Click(object sender, RoutedEventArgs e) => await _mainWindow.ApplyImageOperationAsync("sobel?k_size=3");
 
         // <MenuItem Header = "Binary Filter (Histogram Thresholding)"   Click="BinaryFilter_Click"/>
-        public async void BinaryFilter_Click(object sender, RoutedEventArgs e) => await _mainWindow.ApplyOperation("binary");
+        public async void BinaryFilter_Click(object sender, RoutedEventArgs e) => await _mainWindow.ApplyImageOperationAsync("binary");
 
 
     }

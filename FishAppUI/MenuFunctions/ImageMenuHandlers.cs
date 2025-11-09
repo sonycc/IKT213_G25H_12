@@ -60,20 +60,20 @@ namespace FishAppUI.MenuFunctions
 
 
         // MenuItem Header = "Rotate 90°"               Click="Rotate90Button_Click"/>
-        public async void Rotate90Button_Click(object sender, RoutedEventArgs e) => await _mainWindow.ApplyOperation("rotate?angle=90");
+        public async void Rotate90Button_Click(object sender, RoutedEventArgs e) => await _mainWindow.ApplyImageOperationAsync("rotate?angle=90");
 
         // MenuItem Header = "Rotate 180°"              Click="Rotate180Button_Click"/>
-        public async void Rotate180Button_Click(object sender, RoutedEventArgs e) => await _mainWindow.ApplyOperation("rotate?angle=180");
+        public async void Rotate180Button_Click(object sender, RoutedEventArgs e) => await _mainWindow.ApplyImageOperationAsync("rotate?angle=180");
 
         // <MenuItem Header = "Rotate 270°"              Click="Rotate270Button_Click"/>
-        public async void Rotate270Button_Click(object sender, RoutedEventArgs e) => await _mainWindow.ApplyOperation("rotate?angle=270");
+        public async void Rotate270Button_Click(object sender, RoutedEventArgs e) => await _mainWindow.ApplyImageOperationAsync("rotate?angle=270");
 
 
 
         // < MenuItem Header = "Flip Horizontal"          Click="FlipHorizontal_Click"/>
-        public void FlipHorizontal_Click(object sender, RoutedEventArgs e) => _mainWindow.ApplyOperation("flip_horizontal");
+        public async void FlipHorizontal_Click(object sender, RoutedEventArgs e) => await _mainWindow.ApplyImageOperationAsync("flip_horizontal");
         // MenuItem Header = "Flip Vertical"            Click="FlipVertical_Click"/>
-        public void FlipVertical_Click(object sender, RoutedEventArgs e) => _mainWindow.ApplyOperation("flip_vertical");
+        public async void FlipVertical_Click(object sender, RoutedEventArgs e) => await _mainWindow.ApplyImageOperationAsync("flip_vertical");
 
 
 
