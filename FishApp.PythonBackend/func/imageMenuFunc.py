@@ -20,8 +20,15 @@ def crop_image_func(image, x1: int, y1: int, x2: int, y2: int):
     if not (0 <= x1 < x2 <= w) or not (0 <= y1 < y2 <= h):
         raise ValueError("Crop coordinates out of bounds")
 
-    image[:] = image[y1:y2, x1:x2]
-    return image
+    cropped_image = image[y1:y2, x1:x2].copy()
+    return cropped_image
+
+
+def resize_func(image, x1: int, y1: int, x2: int, y2: int):
+    width = max(x2 - x1, 1)
+    height = max(y2 - y1, 1)
+    resized_image = cv2.resize(image, (width, height), interpolation=cv2.INTER_LINEAR)
+    return resized_image
 
 
 def flip_horizontal_func(image):

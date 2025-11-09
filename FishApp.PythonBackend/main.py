@@ -7,7 +7,10 @@ import tempfile
 from func.imageMenuFunc import (rotate_image_func, crop_image_func,
                                 flip_horizontal_func, flip_vertical_func)
 from func.toolsMenuFunc import (grayscale_image_func, gaussian_blur_func,
-                                sobel_func, binary_filter_func)
+                                sobel_func, binary_filter_func, textbox_func, color_picker_func, zoom_in_func, zoom_out_func)
+from func.shapesMenuFunc import (rectangle_func, circle_func,
+                                 ellipse_func, polygon_func, line_func)
+
 from func.onnxFunc import predict, session
 
 app = FastAPI(title="Fish Image Processing API")
@@ -23,6 +26,12 @@ def save_temp_image(img):
     tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
     cv2.imwrite(tmp.name, img)
     return tmp.name
+
+@app.get("/empty_image")
+async def empty_image(h, w):
+    image = np.zeros((h, w, 3), np.uint8)
+    tmp_path = save_temp_image(image)
+    return FileResponse(tmp_path, media_type="image/png", filename="empty_image.png")
 
 @app.get("/ping")
 async def ping():
@@ -81,8 +90,27 @@ async def grayscale_image():
     return FileResponse(tmp_path, media_type="image/png", filename="grayscale.png")
 
 
+@app.post("/textbox")
+async def textbox_image(x1, y1, text):
+    global current_image
+    check_image()
+
+    current_image = textbox_func(current_image, x1, y1, text)
+    tmp_path = save_temp_image(current_image)
+    return FileResponse(tmp_path, media_type="image/png", filename="textbox.png")
+
+
+@app.post("/color_picker")
+async def color_picker(x1, y1):
+    global current_image
+    check_image()
+
+    color = color_picker_func(current_image, x1, y1)
+    return color
+
+
 @app.post("/crop")
-async def crop_image(x1:int, y1:int, x2:int, y2:int):
+async def crop_image(x1, y1, x2, y2):
     global current_image
     check_image()
 
@@ -114,6 +142,24 @@ async def flip_vertical():
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="flipped_vertical.png")
 
+@app.post("/zoom_in")
+async def zoom_in():
+    global current_image
+    check_image()
+
+    current_image = zoom_in_func(current_image)
+    tmp_path = save_temp_image(current_image)
+    return FileResponse(tmp_path, media_type="image/png", filename="zoomed_in.png")
+
+
+@app.post("/zoom_out")
+async def zoom_out():
+    global current_image
+    check_image()
+
+    current_image = zoom_out_func(current_image)
+    tmp_path = save_temp_image(current_image)
+    return FileResponse(tmp_path, media_type="image/png", filename="zoomed_out.png")
 
 @app.post("/gaussian_blur")
 async def gaussian_blur(k_size: int):
@@ -134,6 +180,7 @@ async def sobel(k_size: int):
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="gaussian_blur.png")
 
+
 @app.post("/binary")
 async def binary_filter():
     global current_image
@@ -142,6 +189,56 @@ async def binary_filter():
     current_image = binary_filter_func(current_image)
     tmp_path = save_temp_image(current_image)
     return FileResponse(tmp_path, media_type="image/png", filename="binary_filter.png")
+
+
+@app.post("/rectangle")
+async def rectangle(x1, y1, x2, y2):
+    global current_image
+    check_image()
+
+    current_image = rectangle_func(current_image, x1, y1, x2, y2)
+    tmp_path = save_temp_image(current_image)
+    return FileResponse(tmp_path, media_type="image/png", filename="rectangle.png")
+
+
+@app.post("/circle")
+async def circle(x1, y1):
+    global current_image
+    check_image()
+
+    current_image = circle_func(current_image, x1, y1)
+    tmp_path = save_temp_image(current_image)
+    return FileResponse(tmp_path, media_type="image/png", filename="circle.png")
+
+
+@app.post("/polygon")
+async def polygon(array):
+    global current_image
+    check_image()
+
+    current_image = polygon_func(current_image, array)
+    tmp_path = save_temp_image(current_image)
+    return FileResponse(tmp_path, media_type="image/png", filename="polygon.png")
+
+
+@app.post("/ellipse")
+async def ellipse(x1, y1):
+    global current_image
+    check_image()
+
+    current_image = ellipse_func(current_image, x1, y1)
+    tmp_path = save_temp_image(current_image)
+    return FileResponse(tmp_path, media_type="image/png", filename="ellipse.png")
+
+
+@app.post("/line")
+async def line(x1, y1, x2, y2):
+    global current_image
+    check_image()
+
+    current_image = line_func(current_image, x1, y1, x2, y2)
+    tmp_path = save_temp_image(current_image)
+    return FileResponse(tmp_path, media_type="image/png", filename="line.png")
 
 
 @app.get("/download")
