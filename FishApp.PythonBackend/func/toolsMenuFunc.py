@@ -16,8 +16,13 @@ def gaussian_blur_func(image, k_size: int):
 
 
 def sobel_func(image, k_size: int):
-    gray = grayscale_image_func(image)
-    gaussian = gaussian_blur_func(gray, k_size)
+
+    if len(image.shape) == 3 and image.shape[2] == 3:
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    else:
+        gray = image.copy()
+
+    gaussian = cv2.GaussianBlur(gray, (k_size, k_size), 0)
 
     sobel_x = cv2.Sobel(gaussian, cv2.CV_64F, 1, 0, ksize=k_size)
     sobel_y = cv2.Sobel(gaussian, cv2.CV_64F, 0, 1, ksize=k_size)
@@ -70,24 +75,21 @@ def color_picker_func(image, x1: int, y1: int):
     b, g, r = image[y1, x1]
     return int(r), int(g), int(b)
 
-zoomed = 0
 
 def zoom_in_func(image):
-    global zoomed
     zoom_factor = 1.2
     height, width = image.shape[:2]
-
-    new_height = int(height / zoom_factor)
-    new_width = int(width / zoom_factor)
-
-    start_x = (width - new_width) // 2
-    start_y = (height - new_height) // 2
-
-    cropped_image = image[start_y: start_y + new_height, start_x: start_x + new_width]
-
-    zoomed_image = cv2.resize(cropped_image, (width, height), interpolation=cv2.INTER_LINEAR)
-    zoomed += 1
+    new_height = int(height * zoom_factor)
+    new_width = int(width * zoom_factor)
+    zoomed_image = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_LINEAR)
     return zoomed_image
 
 
+def zoom_out_func(image):
+    zoom_factor = 0.8
+    height, width = image.shape[:2]
+    new_height = int(height * zoom_factor)
+    new_width = int(width * zoom_factor)
+    zoomed_image = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_LINEAR)
+    return zoomed_image
 
