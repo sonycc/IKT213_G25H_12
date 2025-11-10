@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using FishAppUI.MenuFunctions;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,20 +13,109 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
+
 namespace FishAppUI
 {
     public partial class MainWindow : Window
     {
-        private string? selectedFilePath;
-        private string? currentImagePath; // Path for save functionality
-        private readonly HttpClient httpClient = new HttpClient { BaseAddress = new Uri("http://127.0.0.1:5000/") };
-        private readonly Stack<byte[]> imageHistory = new Stack<byte[]>();
-        private byte[]? originalProcessedImageBytes;
+        public string? selectedFilePath;
+        public string? currentImagePath; // Path for save functionality
+        public readonly HttpClient httpClient = new HttpClient { BaseAddress = new Uri("http://127.0.0.1:5000/") };
+        public readonly Stack<byte[]> imageHistory = new Stack<byte[]>();
+        public byte[]? originalCanvasBytes;
+        public bool imageChanged = false;
+        public bool imageUploadedToBackend = false;
+
+
+        public BrushSize CurrentBrushSize { get; private set; } = BrushSize.Small;
+
+        public void SetBrushSize(BrushSize size)
+        {
+            CurrentBrushSize = size;
+            // TODOO update UI brush icon
+        }
+
+
+        public enum BrushSize
+        {
+            Small,
+            Medium,
+            Large
+        }
+
 
         public MainWindow()
         {
             InitializeComponent();
             InitializeButtonStates();
+
+
+            // File menu
+            var fileMenuHandlers = new FileMenuHandlers(this);
+                FileNewMenuItem.Click +=            fileMenuHandlers.FileNew_Click;
+                FileOpenMenuItem.Click +=           fileMenuHandlers.FileOpen_Click;
+                FileSaveMenuItem.Click +=           fileMenuHandlers.FileSave_Click;
+                FileSaveAsMenuItem.Click +=         fileMenuHandlers.FileSaveAs_Click;
+                //UndoMenuItem.Click +=               fileMenuHandlers.UndoMenuItem_Click; //##
+                //ResetMenuItem.Click +=              fileMenuHandlers.ResetMenuItem_Click; //##
+                FilePropertiesMenuItem.Click +=     fileMenuHandlers.FileProperties_Click;
+                FileQuitMenuItem.Click +=           fileMenuHandlers.FileQuit_Click;
+
+            // Clipboard menu
+            var clipboardMenuHandlers = new ClipboardMenuHandlers(this);
+                ClipboardCopyMenuItem.Click +=      clipboardMenuHandlers.ClipboardCopy_Click;
+                ClipboardPasteMenuItem.Click +=     clipboardMenuHandlers.ClipboardPaste_Click;
+                ClipboardCutMenuItem.Click +=       clipboardMenuHandlers.ClipboardCut_Click;
+
+
+
+            // Image menu
+            var imageMenuHandlers = new ImageMenuHandlers(this);
+                RectangularSelectMenuItem.Click +=  imageMenuHandlers.ImageRectangularSelect_Click;
+                FreeformSelectMenuItem.Click +=     imageMenuHandlers.ImageFreeformSelect_Click;
+                PolygonSelectMenuItem.Click +=      imageMenuHandlers.ImagePolygonSelect_Click;
+                CropMenuItem.Click +=               imageMenuHandlers.ImageCrop_Click;
+                ResizeMenuItem.Click +=             imageMenuHandlers.ImageResize_Click;
+                Rotate90MenuItem.Click +=           imageMenuHandlers.Rotate90Button_Click;
+                Rotate180MenuItem.Click +=          imageMenuHandlers.Rotate180Button_Click;
+                Rotate270MenuItem.Click +=          imageMenuHandlers.Rotate270Button_Click;
+                FlipHorizontalMenuItem.Click +=     imageMenuHandlers.FlipHorizontal_Click;
+                FlipVerticalMenuItem.Click +=       imageMenuHandlers.FlipVertical_Click;
+
+
+            // Tools menu
+            var toolsMenuHandlers = new ToolsMenuHandlers(this);
+                ZoomInMenuItem.Click +=             toolsMenuHandlers.ZoomIn_Click;
+                ZoomOutMenuItem.Click +=            toolsMenuHandlers.ZoomOut_Click;
+                EraserMenuItem.Click +=             toolsMenuHandlers.Eraser_Click;
+                ColorPickerMenuItem.Click +=        toolsMenuHandlers.ColorPicker_Click;
+                BrushBasicMenuItem.Click +=         toolsMenuHandlers.BrushBasic_Click;
+                BrushTextureMenuItem.Click +=       toolsMenuHandlers.BrushTexture_Click;
+                BrushPatternMenuItem.Click +=       toolsMenuHandlers.BrushPattern_Click;
+                TextToolMenuItem.Click +=           toolsMenuHandlers.TextTool_Click;
+                GrayscaleMenuItem.Click +=          toolsMenuHandlers.Grayscale_Click;
+                OnnxMenuItem.Click +=               toolsMenuHandlers.Onnx_Click;
+                GaussianBlurMenuItem.Click +=       toolsMenuHandlers.GaussianBlur_Click;
+                SobelFilterMenuItem.Click +=        toolsMenuHandlers.SobelFilter_Click;
+                BinaryFilterMenuItem.Click +=       toolsMenuHandlers.BinaryFilter_Click;
+
+
+            // Shapes menu
+            var shapesMenuHandlers = new ShapesMenuHandlers(this);
+                ShapeRectangleMenuItem.Click +=     shapesMenuHandlers.ShapeRectangle_Click;
+                ShapeEllipseMenuItem.Click +=       shapesMenuHandlers.ShapeEllipse_Click;
+                ShapeLineMenuItem.Click +=          shapesMenuHandlers.ShapeLine_Click;
+                ShapePolygonMenuItem.Click +=       shapesMenuHandlers.ShapePolygon_Click;
+                ShapeOutlineColorMenuItem.Click +=  shapesMenuHandlers.ShapeOutlineColor_Click;
+                ShapeFillColorMenuItem.Click +=     shapesMenuHandlers.ShapeFillColor_Click;
+
+            // Color menu
+            var colorMenuHandlers = new ColorMenuHandlers(this);
+                ColorPaletteMenuItem.Click +=       colorMenuHandlers.ColorPalette_Click;
+                BrushSizeSmallMenuItem.Click +=     colorMenuHandlers.BrushSizeSmall_Click;
+                BrushSizeMediumMenuItem.Click +=    colorMenuHandlers.BrushSizeMedium_Click;
+                BrushSizeLargeMenuItem.Click +=     colorMenuHandlers.BrushSizeLarge_Click;
+
         }
 
         // Initialize button states on startup
@@ -34,195 +124,124 @@ namespace FishAppUI
             await UpdateButtonStates();
         }
 
-        // Select an image from disk
-        private async void SelectButton_Click(object sender, RoutedEventArgs e)
+        public void SaveImageToFile(string filePath)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png";
-            if (openFileDialog.ShowDialog() == true)
+            if (Canvas.Source is BitmapImage bitmap)
             {
-                selectedFilePath = openFileDialog.FileName;
-                OriginalImage.Source = new BitmapImage(new Uri(selectedFilePath));
-                await UpdateButtonStates();
+                try
+                {
+                    SaveBitmapImageToFile(bitmap, filePath);
+                    MessageBox.Show("Image saved successfully!", "Save Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error saving image: {ex.Message}", "Save Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("No image to save.", "Save Error", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
-        // Upload the selected image to backend
-        private async void UploadButton_Click(object sender, RoutedEventArgs e)
+
+
+
+
+        // Combined helper to send image operations or uploads
+        public async Task ApplyImageOperationAsync(string endpoint, string? filePath = null)
         {
-            if (string.IsNullOrEmpty(selectedFilePath))
+
+            if (Canvas.Source is null)
             {
-                MessageBox.Show("Please select an image first!");
+                MessageBox.Show("Error: No image loaded.");
                 return;
             }
 
-            var processedBitmap = await PostFileAndGetImage("upload-image", selectedFilePath);
-            if (processedBitmap != null)
+            if (!imageUploadedToBackend)
             {
-                // Clear history and set original processed image bytes
-                imageHistory.Clear();
-                originalProcessedImageBytes = await GetImageBytesFromBitmap(processedBitmap);
-                ProcessedImage.Source = processedBitmap;
-                await UpdateButtonStates();
+                if (Canvas.Source is BitmapImage bitmap)
+                {
+                    var currentImageBytes = await GetImageBytesFromBitmap(bitmap);
+                    var result = await UploadImageBytesAndGetResult(currentImageBytes);
+                    if (result != null)
+                    {
+                        imageUploadedToBackend = true;
+                    }
+                }
             }
-        }
 
-        // Rotate / Grayscale buttons
-        private async void Rotate90Button_Click(object sender, RoutedEventArgs e) => await ApplyOperation("rotate?angle=90");
-        private async void Rotate180Button_Click(object sender, RoutedEventArgs e) => await ApplyOperation("rotate?angle=180");
-        private async void Rotate270Button_Click(object sender, RoutedEventArgs e) => await ApplyOperation("rotate?angle=270");
-        private async void GrayscaleButton_Click(object sender, RoutedEventArgs e) => await ApplyOperation("grayscale");
-
-        private async void OnnxButton_Click(object sender, RoutedEventArgs e)
-        {
             try
             {
-                var response = await httpClient.GetAsync("ONNX");
-                response.EnsureSuccessStatusCode();
-
-                var json = await response.Content.ReadAsStringAsync();
-                MessageBox.Show(json, "ONNX Result", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error calling ONNX: {ex.Message}", "ONNX Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        // Helper to call backend endpoints for operations
-        private async Task ApplyOperation(string endpoint)
-        {
-            try
-            {
-                // Save current state to history before applying operation
-                if (ProcessedImage.Source is BitmapImage bitmap)
+                // Save current canvas state before applying operation
+                if (Canvas.Source is BitmapImage bitmap)
                 {
                     var currentImageBytes = await GetImageBytesFromBitmap(bitmap);
                     imageHistory.Push(currentImageBytes);
                 }
 
-                var response = await httpClient.PostAsync(endpoint, null);
+                HttpResponseMessage response;
+
+                // If a file path is provided, upload it
+                if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
+                {
+                    using var form = new MultipartFormDataContent();
+                    using var fs = File.OpenRead(filePath);
+                    var streamContent = new StreamContent(fs);
+
+                    // Detect proper MIME type
+                    var fileExt = Path.GetExtension(filePath).ToLower();
+                    string contentType = fileExt switch
+                    {
+                        ".png" => "image/png",
+                        ".jpg" => "image/jpeg",
+                        ".jpeg" => "image/jpeg",
+                        _ => "application/octet-stream"
+                    };
+                    streamContent.Headers.ContentType = new MediaTypeHeaderValue(contentType);
+
+                    form.Add(streamContent, "file", Path.GetFileName(filePath));
+
+                    response = await httpClient.PostAsync(endpoint, form);
+                }
+                else
+                {
+                    // Otherwise just call the endpoint directly
+                    response = await httpClient.PostAsync(endpoint, null);
+                }
+
                 response.EnsureSuccessStatusCode();
 
+                // Load the resulting image
                 var imageBytes = await response.Content.ReadAsByteArrayAsync();
-                ProcessedImage.Source = LoadImageFromBytes(imageBytes);
-                await UpdateButtonStates();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.Message}");
-            }
-        }
-
-        // Helper to upload image file to backend
-        private async Task<BitmapImage?> PostFileAndGetImage(string endpoint, string filePath)
-        {
-            try
-            {
-                using var form = new MultipartFormDataContent();
-                using var fs = File.OpenRead(filePath);
-                var streamContent = new StreamContent(fs);
-
-                // Correct MIME type
-                var fileExt = Path.GetExtension(filePath).ToLower();
-                string contentType = fileExt switch
+                var newImage = LoadImageFromBytes(imageBytes);
+                if (newImage != null)
                 {
-                    ".png" => "image/png",
-                    ".jpg" => "image/jpeg",
-                    ".jpeg" => "image/jpeg",
-                    _ => "application/octet-stream"
-                };
-                streamContent.Headers.ContentType = new MediaTypeHeaderValue(contentType);
-
-                form.Add(streamContent, "file", Path.GetFileName(filePath));
-
-                var response = await httpClient.PostAsync(endpoint, form);
-                response.EnsureSuccessStatusCode();
-
-                var imageBytes = await response.Content.ReadAsByteArrayAsync();
-                return LoadImageFromBytes(imageBytes);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.Message}");
-                return null;
-            }
-        }
-
-
-        // Undo button click handler
-        private async void UndoButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (imageHistory.Count > 0)
-            {
-                var previousImageBytes = imageHistory.Pop();
-                var restoredBitmap = await UploadImageBytesAndGetResult(previousImageBytes);
-                if (restoredBitmap != null)
-                {
-                    ProcessedImage.Source = restoredBitmap;
+                    Canvas.Source = newImage;
                     await UpdateButtonStates();
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}", "Operation Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
+
 
         // Reset button click handler
-        private async void ResetButton_Click(object sender, RoutedEventArgs e)
+        private async void ResetMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (originalProcessedImageBytes != null)
-            {
-                imageHistory.Clear();
-                var resetBitmap = await UploadImageBytesAndGetResult(originalProcessedImageBytes);
-                if (resetBitmap != null)
-                {
-                    ProcessedImage.Source = resetBitmap;
-                    await UpdateButtonStates();
-                }
-            }
+            await LoadImageFromFile(currentImagePath!);
         }
 
-        // Download button click handler
-        private void DownloadButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (ProcessedImage.Source is BitmapImage bitmap)
-            {
-                SaveFileDialog saveFileDialog = new SaveFileDialog();
-                saveFileDialog.Filter = "PNG Image|*.png|JPEG Image|*.jpg|All Files|*.*";
-                saveFileDialog.DefaultExt = "png";
-                saveFileDialog.FileName = "processed_image";
-
-                if (saveFileDialog.ShowDialog() == true)
-                {
-                    try
-                    {
-                        SaveBitmapImageToFile(bitmap, saveFileDialog.FileName);
-                        MessageBox.Show("Image saved successfully!", "Download Complete", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Error saving image: {ex.Message}", "Download Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                }
-            }
-        }
 
         // Update button enabled states based on history
         private async Task UpdateButtonStates()
         {
-            UploadButton.IsEnabled = !string.IsNullOrEmpty(selectedFilePath);
-            UndoButton.IsEnabled = imageHistory.Count > 0;
-            ResetButton.IsEnabled = originalProcessedImageBytes != null && !(await IsCurrentImageOriginal());
-            DownloadButton.IsEnabled = ProcessedImage.Source != null;
+            UndoMenuItem.IsEnabled = imageHistory.Count > 0;
+            ResetMenuItem.IsEnabled = !string.IsNullOrEmpty(currentImagePath);
         }
 
-        // Check if current image is the original uploaded image
-        private async Task<bool> IsCurrentImageOriginal()
-        {
-            if (originalProcessedImageBytes == null || ProcessedImage.Source is not BitmapImage bitmap)
-                return true;
-
-            var currentBytes = await GetImageBytesFromBitmap(bitmap);
-            return currentBytes.SequenceEqual(originalProcessedImageBytes);
-        }
 
         // Helper to convert BitmapImage to byte array
         private Task<byte[]> GetImageBytesFromBitmap(BitmapImage bitmap)
@@ -290,107 +309,10 @@ namespace FishAppUI
             return bitmap;
         }
 
-        // File Menu Event Handlers
-        private async void FileNew_Click(object sender, RoutedEventArgs e)
-        {
-            var dialog = new NewImageDialog();
-            if (dialog.ShowDialog() == true)
-            {
-                await CreateNewImage(dialog.Width, dialog.Height, dialog.ImageType);
-            }
-        }
 
-        private async void FileOpen_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif|All Files|*.*";
-            if (openFileDialog.ShowDialog() == true)
-            {
-                await LoadImageFromFile(openFileDialog.FileName);
-            }
-        }
 
-        private void FileSave_Click(object sender, RoutedEventArgs e)
-        {
-            if (string.IsNullOrEmpty(currentImagePath))
-            {
-                FileSaveAs_Click(sender, e);
-            }
-            else
-            {
-                SaveImageToFile(currentImagePath);
-            }
-        }
 
-        private void FileSaveAs_Click(object sender, RoutedEventArgs e)
-        {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "PNG Image|*.png|JPEG Image|*.jpg|BMP Image|*.bmp|All Files|*.*";
-            saveFileDialog.DefaultExt = "png";
-
-            if (saveFileDialog.ShowDialog() == true)
-            {
-                currentImagePath = saveFileDialog.FileName;
-                SaveImageToFile(currentImagePath);
-            }
-        }
-
-        private void FileProperties_Click(object sender, RoutedEventArgs e)
-        {
-            if (ProcessedImage.Source is BitmapImage bitmap)
-            {
-                var properties = $"Width: {bitmap.PixelWidth}px\n" +
-                               $"Height: {bitmap.PixelHeight}px\n" +
-                               $"DPI X: {bitmap.DpiX}\n" +
-                               $"DPI Y: {bitmap.DpiY}\n" +
-                               $"Format: {bitmap.Format}\n" +
-                               $"Path: {currentImagePath ?? "Not saved"}";
-
-                MessageBox.Show(properties, "Image Properties", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            else
-            {
-                MessageBox.Show("No image loaded.", "Properties", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-        }
-
-        private void FileQuit_Click(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown();
-        }
-
-        // Helper methods for File operations
-        private async Task CreateNewImage(int width, int height, string imageType)
-        {
-            try
-            {
-                var bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
-                var pixels = new byte[width * height * 4];
-
-                // Fill with white background
-                for (int i = 0; i < pixels.Length; i += 4)
-                {
-                    pixels[i] = 255;     // Blue
-                    pixels[i + 1] = 255; // Green
-                    pixels[i + 2] = 255; // Red
-                    pixels[i + 3] = 255; // Alpha
-                }
-
-                bitmap.WritePixels(new Int32Rect(0, 0, width, height), pixels, width * 4, 0);
-
-                ProcessedImage.Source = bitmap;
-                currentImagePath = null; // New image has no path yet
-                imageHistory.Clear();
-                originalProcessedImageBytes = null;
-                await UpdateButtonStates();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error creating new image: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private async Task LoadImageFromFile(string filePath)
+        public async Task LoadImageFromFile(string filePath)
         {
             try
             {
@@ -401,10 +323,10 @@ namespace FishAppUI
                 bitmap.EndInit();
                 bitmap.Freeze();
 
-                ProcessedImage.Source = bitmap;
+                Canvas.Source = bitmap;
                 currentImagePath = filePath;
                 imageHistory.Clear();
-                originalProcessedImageBytes = null;
+                originalCanvasBytes = null;
                 await UpdateButtonStates();
             }
             catch (Exception ex)
@@ -413,75 +335,20 @@ namespace FishAppUI
             }
         }
 
-        private void SaveImageToFile(string filePath)
+        internal void OpenColorPalette()
         {
-            if (ProcessedImage.Source is BitmapImage bitmap)
-            {
-                try
-                {
-                    SaveBitmapImageToFile(bitmap, filePath);
-                    MessageBox.Show("Image saved successfully!", "Save Complete", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error saving image: {ex.Message}", "Save Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            else
-            {
-                MessageBox.Show("No image to save.", "Save Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
+            throw new NotImplementedException();
         }
 
-
-        private void ClipboardCopy_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
-        private void ClipboardPaste_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
-        private void ClipboardCut_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
-
-        private void ImageRectangularSelect_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
-        private void ImageFreeformSelect_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
-        private void ImagePolygonSelect_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Sondre
-        private void ImageCrop_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void ImageResize_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void FlipHorizontal_Click(object sender, RoutedEventArgs e) => ApplyOperation("flip_horizontal");
-        private void FlipVertical_Click(object sender, RoutedEventArgs e) => ApplyOperation("flip_vertical");
-
-        private void ZoomIn_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void ZoomOut_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void Eraser_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
-        private void ColorPicker_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void BrushBasic_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
-        private void BrushTexture_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
-        private void BrushPattern_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
-        private void TextTool_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private async void GaussianBlur_Click(object sender, RoutedEventArgs e) => await ApplyOperation("gaussian_blur?k_size=5");
-        private async void SobelFilter_Click(object sender, RoutedEventArgs e) => await ApplyOperation("sobel?k_size=3");
-        private async void BinaryFilter_Click(object sender, RoutedEventArgs e) => await ApplyOperation("binary");
-
-        private void ShapeRectangle_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void ShapeEllipse_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void ShapeLine_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void ShapePolygon_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void ShapeOutlineColor_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
-        private void ShapeFillColor_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
-
-        private void ColorPalette_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
-        private void BrushSizeSmall_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
-        private void BrushSizeMedium_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
-        private void BrushSizeLarge_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
-
-        //Layer Menu(Optional)
-        private void LayerNew_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void LayerLoad_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void LayerEdit_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void LayerSelect_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void LayerDelete_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        private void LayerRename_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-
-        //Filter Menu(extremely Optional)
-        private void FilterLightning_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void FilterFire_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void FilterBubbles_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-
+        internal void SetBrushSize(MenuFunctions.BrushSize small)
+        {
+            throw new NotImplementedException();
+        }
     }
+
+
+
+
+
+
 }

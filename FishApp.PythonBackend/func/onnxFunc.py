@@ -3,9 +3,10 @@ from PIL import Image
 import numpy as np
 import onnxruntime as ort
 
-session = ort.InferenceSession("../FishApp.PythonModel/cod_classifier.onnx")
+session = ort.InferenceSession("../FishApp.PythonModel/exports/fish_classifier.onnx")
 input_name = session.get_inputs()[0].name
 output_name = session.get_outputs()[0].name
+
 
 def predict(image, model_session=None):
     # Convert to RGB, PIL uses RBG
@@ -27,9 +28,9 @@ def predict(image, model_session=None):
     # convert to probability
     exp = np.exp(result - np.max(result))
     probs = exp / np.sum(exp)
-    top = np.argsort(-probs)[:5]
+    top = np.argsort(-probs)[:3]
 
-    with open("../FishApp.PythonModel/classes.txt", "r") as f:
+    with open("../FishApp.PythonModel/exports/labels.txt", "r") as f:
         labels = [line.strip() for line in f.readlines()]
 
     output = [
@@ -37,4 +38,3 @@ def predict(image, model_session=None):
         for i in top
     ]
     return output
-

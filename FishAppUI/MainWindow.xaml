@@ -1,161 +1,189 @@
 ﻿<Window x:Class="FishAppUI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="FishApp" Height="956" Width="800">
+        Title="FishApp" Height="1080" Width="1920">
     <DockPanel>
         <!-- Menu Bar -->
         <Menu DockPanel.Dock="Top">
             <!-- File Menu -->
             <MenuItem Header="File">
-                <MenuItem Header="New" Click="FileNew_Click"/>
-                <MenuItem Header="Open" Click="FileOpen_Click"/>
-                <MenuItem Header="Save" Click="FileSave_Click"/>
-                <MenuItem Header="Save As" Click="FileSaveAs_Click"/>
+                    <MenuItem x:Name="FileNewMenuItem" Header="New"/>
+                    <MenuItem x:Name="FileOpenMenuItem" Header="Open" />
+                    <MenuItem x:Name="FileSaveMenuItem" Header="Save" />
+                    <MenuItem x:Name="FileSaveAsMenuItem" Header="Save As" />
                 <Separator/>
-                <MenuItem Header="Properties" Click="FileProperties_Click"/>
+                    <MenuItem x:Name="UndoMenuItem" Header="Undo" IsEnabled="False" />
+                    <MenuItem x:Name="ResetMenuItem" Header="Reset Canvas" IsEnabled="False" />
                 <Separator/>
-                <MenuItem Header="Quit" Click="FileQuit_Click"/>
+                    <MenuItem x:Name="FilePropertiesMenuItem" Header="Properties" />
+                <Separator/>
+                    <MenuItem x:Name="FileQuitMenuItem" Header="Quit" />
             </MenuItem>
 
             <!-- Clipboard Menu -->
             <MenuItem Header="_Clipboard">
-                <MenuItem Header="Copy" Click="ClipboardCopy_Click"/>
-                <MenuItem Header="Paste" Click="ClipboardPaste_Click"/>
-                <MenuItem Header="Cut" Click="ClipboardCut_Click"/>
+                <MenuItem x:Name="ClipboardCopyMenuItem" Header="Copy" IsEnabled="False"/>
+                <MenuItem x:Name="ClipboardPasteMenuItem" Header="Paste" IsEnabled="False"/>
+                <MenuItem x:Name="ClipboardCutMenuItem" Header="Cut" IsEnabled="False"/>
             </MenuItem>
 
             <!-- Image Menu -->
             <MenuItem Header="_Image">
                 <MenuItem Header="Select Shape">
-                    <MenuItem Header="Rectangular Selection" Click="ImageRectangularSelect_Click"/>
-                    <MenuItem Header="Freeform Selection" Click="ImageFreeformSelect_Click"/>
-                    <MenuItem Header="Polygon Selection" Click="ImagePolygonSelect_Click"/>
+                    <MenuItem x:Name="RectangularSelectMenuItem" Header="Rectangular Selection" IsEnabled="False"/>
+                    <MenuItem x:Name="FreeformSelectMenuItem" Header="Freeform Selection" IsEnabled="False"/>
+                    <MenuItem x:Name="PolygonSelectMenuItem" Header="Polygon Selection" IsEnabled="False"/>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Header="Crop" Click="ImageCrop_Click"/>
-                <MenuItem Header="Resize" Click="ImageResize_Click"/>
+                <MenuItem x:Name="CropMenuItem" Header="Crop" IsEnabled="False"/>
+                <MenuItem x:Name="ResizeMenuItem" Header="Resize" IsEnabled="False"/>
                 <MenuItem Header="Rotate">
-                    <MenuItem Header="Rotate 90°" Click="Rotate90Button_Click"/>
-                    <MenuItem Header="Rotate 180°" Click="Rotate180Button_Click"/>
-                    <MenuItem Header="Rotate 270°" Click="Rotate270Button_Click"/>
+                    <MenuItem x:Name="Rotate90MenuItem" Header="Rotate 90°" />
+                    <MenuItem x:Name="Rotate180MenuItem" Header="Rotate 180°" />
+                    <MenuItem x:Name="Rotate270MenuItem" Header="Rotate 270°" />
                 </MenuItem>
                 <MenuItem Header="Flip">
-                    <MenuItem Header="Flip Horizontal" Click="FlipHorizontal_Click"/>
-                    <MenuItem Header="Flip Vertical" Click="FlipVertical_Click"/>
+                    <MenuItem x:Name="FlipHorizontalMenuItem" Header="Flip Horizontal" />
+                    <MenuItem x:Name="FlipVerticalMenuItem" Header="Flip Vertical" />
                 </MenuItem>
             </MenuItem>
+
 
             <!-- Tools Menu -->
             <MenuItem Header="_Tools">
-                <MenuItem Header="Zoom In" Click="ZoomIn_Click"/>
-                <MenuItem Header="Zoom Out" Click="ZoomOut_Click"/>
-                <MenuItem Header="Eraser" Click="Eraser_Click"/>
-                <MenuItem Header="Color Picker" Click="ColorPicker_Click"/>
+                <MenuItem x:Name="ZoomInMenuItem" Header="Zoom In" IsEnabled="False"/>
+                <MenuItem x:Name="ZoomOutMenuItem" Header="Zoom Out" IsEnabled="False"/>
+                <MenuItem x:Name="EraserMenuItem" Header="Eraser" IsEnabled="False"/>
+                <MenuItem x:Name="ColorPickerMenuItem" Header="Color Picker" IsEnabled="False"/>
                 <MenuItem Header="Paint Brushes">
-                    <MenuItem Header="Basic Brush" Click="BrushBasic_Click"/>
-                    <MenuItem Header="Texture Brush" Click="BrushTexture_Click"/>
-                    <MenuItem Header="Pattern Brush" Click="BrushPattern_Click"/>
+                    <MenuItem x:Name="BrushBasicMenuItem" Header="Basic Brush" IsEnabled="False"/>
+                    <MenuItem x:Name="BrushTextureMenuItem" Header="Texture Brush" IsEnabled="False"/>
+                    <MenuItem x:Name="BrushPatternMenuItem" Header="Pattern Brush" IsEnabled="False"/>
                 </MenuItem>
-                <MenuItem Header="Text Tool" Click="TextTool_Click"/>
+                <MenuItem x:Name="TextToolMenuItem" Header="Text Tool" IsEnabled="False"/>
                 <Separator/>
-                <MenuItem Header="Gaussian Blur" Click="GaussianBlur_Click"/>
-                <MenuItem Header="Sobel Filter" Click="SobelFilter_Click"/>
-                <MenuItem Header="Binary Filter (Histogram Thresholding)" Click="BinaryFilter_Click"/>
+                    <MenuItem x:Name="GrayscaleMenuItem" Header="Grayscale"/>
+                    <MenuItem x:Name="OnnxMenuItem" Header="Run ONNX"/>
+                <Separator/>
+                    <MenuItem x:Name="GaussianBlurMenuItem" Header="Gaussian Blur" />
+                    <MenuItem x:Name="SobelFilterMenuItem" Header="Sobel Filter" />
+                    <MenuItem x:Name="BinaryFilterMenuItem" Header="Binary Filter (Histogram Thresholding)" />
             </MenuItem>
+
 
             <!-- Shapes Menu -->
             <MenuItem Header="_Shapes">
-                <MenuItem Header="Rectangle" Click="ShapeRectangle_Click"/>
-                <MenuItem Header="Ellipse" Click="ShapeEllipse_Click"/>
-                <MenuItem Header="Line" Click="ShapeLine_Click"/>
-                <MenuItem Header="Polygon" Click="ShapePolygon_Click"/>
+                <MenuItem x:Name="ShapeRectangleMenuItem" Header="Rectangle" IsEnabled="False"/>
+                <MenuItem x:Name="ShapeEllipseMenuItem" Header="Ellipse" IsEnabled="False"/>
+                <MenuItem x:Name="ShapeLineMenuItem" Header="Line" IsEnabled="False"/>
+                <MenuItem x:Name="ShapePolygonMenuItem" Header="Polygon" IsEnabled="False"/>
                 <Separator/>
-                <MenuItem Header="Outline Color" Click="ShapeOutlineColor_Click"/>
-                <MenuItem Header="Fill Color" Click="ShapeFillColor_Click"/>
+                <MenuItem x:Name="ShapeOutlineColorMenuItem" Header="Outline Color" IsEnabled="False"/>
+                <MenuItem x:Name="ShapeFillColorMenuItem" Header="Fill Color" IsEnabled="False"/>
             </MenuItem>
+
 
             <!-- Color Menu -->
             <MenuItem Header="_Color">
-                <MenuItem Header="Color Palette" Click="ColorPalette_Click"/>
-                <MenuItem Header="Brush Size">
-                    <MenuItem Header="Small" Click="BrushSizeSmall_Click"/>
-                    <MenuItem Header="Medium" Click="BrushSizeMedium_Click"/>
-                    <MenuItem Header="Large" Click="BrushSizeLarge_Click"/>
+                <MenuItem x:Name="ColorPaletteMenuItem" Header="Color Palette" IsEnabled="False"/>
+                <MenuItem Header="Brush Size" IsEnabled="False">
+                    <MenuItem x:Name="BrushSizeSmallMenuItem" Header="Small" />
+                    <MenuItem x:Name="BrushSizeMediumMenuItem" Header="Medium" />
+                    <MenuItem x:Name="BrushSizeLargeMenuItem" Header="Large" />
                 </MenuItem>
             </MenuItem>
 
+
             <!-- Layer Menu (Optional) -->
-            <MenuItem Header="_Layer">
-                <MenuItem Header="New Layer" Click="LayerNew_Click"/>
-                <MenuItem Header="Load Layer" Click="LayerLoad_Click"/>
-                <MenuItem Header="Edit Layer" Click="LayerEdit_Click"/>
-                <MenuItem Header="Select Layer" Click="LayerSelect_Click"/>
-                <MenuItem Header="Delete Layer" Click="LayerDelete_Click"/>
-                <MenuItem Header="Rename Layer" Click="LayerRename_Click"/>
+            <MenuItem Header="_Layer" IsEnabled="False">
+                <MenuItem x:Name="NewLayerMenuItem" Header="New Layer"/>
+                <MenuItem x:Name="LoadLayerMenuItem" Header="Load Layer"/>
+                <MenuItem x:Name="EditLayerMenuItem" Header="Edit Layer"/>
+                <MenuItem x:Name="SelectLayerMenuItem" Header="Select Layer"/>
+                <MenuItem x:Name="DeleteLayerMenuItem" Header="Delete Layer"/>
+                <MenuItem x:Name="RenameLayerMenuItem" Header="Rename Layer"/>
             </MenuItem>
 
             <!-- Filters Menu (Optional Snapchat-like) -->
-            <MenuItem Header="_Filters">
-                <MenuItem Header="Lightning Filter" Click="FilterLightning_Click"/>
-                <MenuItem Header="Fire Filter" Click="FilterFire_Click"/>
-                <MenuItem Header="Bubbles Filter 🐟" Click="FilterBubbles_Click"/>
+            <MenuItem Header="_Filters" IsEnabled="False">
+                <MenuItem x:Name="LightningFilterMenuItem" Header="Lightning Filter"/>
+                <MenuItem x:Name="FireFilterMenuItem" Header="Fire Filter"/>
+                <MenuItem x:Name="BubblesFilterMenuItem" Header="Bubbles Filter"/>
             </MenuItem>
         </Menu>
-        
-        <!-- Main Content Area -->
+
+        <!-- Main 3-Column Layout -->
         <Grid Margin="10">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="389*"/>
-        </Grid.ColumnDefinitions>
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="1">
-            <!-- Top Control Buttons -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
-                <Button Name="SelectButton" Width="120" Height="40" Click="SelectButton_Click" Margin="0,0,10,0">
-                    Select Image
-                </Button>
-                <Button Name="UploadButton" Width="120" Height="40" Click="UploadButton_Click" Margin="0,0,10,0" IsEnabled="False">
-                    Upload Image
-                </Button>
-                <Button Name="DownloadButton" Width="120" Height="40" Click="DownloadButton_Click" Margin="0,0,0,0" IsEnabled="False">
-                    Download Image
-                </Button>
-            </StackPanel>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <!-- Top Row -->
+                <RowDefinition Height="*"/>
+                <!-- Main Content Area -->
+            </Grid.RowDefinitions>
 
-            <!-- Original Image Preview -->
-            <Image Name="OriginalImage" Width="400" Height="300" Margin="0,0,0,20"/>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <!-- Left Panel -->
+                <ColumnDefinition Width="6*"/>
+                <!-- Center Canvas -->
+                <ColumnDefinition Width="3*"/>
+                <!-- Right Panel -->
+            </Grid.ColumnDefinitions>
 
-            <!-- Operations -->
-            <TextBlock Text="Operations:" Margin="0,0,0,5" FontWeight="Bold"/>
+            <!-- Top Row -->
+            <Border Grid.Row="0" Grid.ColumnSpan="3"
+            Background="LightGray"
+            BorderBrush="#CCC"
+            BorderThickness="1"
+            CornerRadius="4"
+            Margin="5"
+            Padding="8">
+                <TextBlock Text="Toolbar row"
+                   FontWeight="Bold"
+                   FontSize="14"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"/>
+            </Border>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
-                <Button Name="Rotate90Button" Width="100" Click="Rotate90Button_Click" Margin="0,0,10,0">Rotate 90°</Button>
-                <Button Name="Rotate180Button" Width="100" Click="Rotate180Button_Click" Margin="0,0,10,0">Rotate 180°</Button>
-                <Button Name="Rotate270Button" Width="100" Click="Rotate270Button_Click">Rotate 270°</Button>
-            </StackPanel>
+            <!-- Left Panel -->
+            <Border Grid.Row="1" Grid.Column="0" BorderBrush="#CCC" BorderThickness="1"
+            CornerRadius="4" Margin="10" Background="WhiteSmoke">
+                <StackPanel Margin="10">
+                    <TextBlock Text="Left Panel" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                    <TextBlock Text="Layers info/helper panel." TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
 
-            <Button Name="GrayscaleButton" Width="200" Height="40" Click="GrayscaleButton_Click" Margin="0,0,0,10">
-                Grayscale
-            </Button>
+            <!-- Center Canvas -->
+            <Border Grid.Row="1" Grid.Column="1" BorderBrush="Black" BorderThickness="2" Background="White" Margin="10">
+                <Image Name="Canvas" Stretch="Uniform"/>
+            </Border>
 
-            <Button Name="OnnxButton" Width="200" Height="40" Click="OnnxButton_Click" Margin="0,0,0,10">
-                Run ONNX
-            </Button>
+            <!-- Right Panel -->
+            <Border Grid.Row="1" Grid.Column="2" 
+                BorderBrush="#CCC" BorderThickness="1"
+                CornerRadius="4" Margin="10" 
+                Background="WhiteSmoke">
+                <StackPanel Margin="10">
+                    <TextBlock Text="ONNX Fish Detector" 
+                       FontWeight="Bold" 
+                       FontSize="16" 
+                       Margin="0,0,0,10"/>
 
-            <!-- Undo and Reset Controls -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
-                <Button Name="UndoButton" Width="100" Height="40" Click="UndoButton_Click" Margin="0,0,10,0" IsEnabled="False">
-                    Undo
-                </Button>
-                <Button Name="ResetButton" Width="100" Height="40" Click="ResetButton_Click" Margin="0,0,0,0" IsEnabled="False">
-                    Reset
-                </Button>
-            </StackPanel>
-
-            <!-- Processed Image Preview -->
-            <TextBlock Text="Result:" Margin="0,0,0,5" FontWeight="Bold"/>
-            <Image Name="ProcessedImage" Width="400" Height="300"/>
-        </StackPanel>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                        Height="400"
+                        Background="White"
+                        Padding="5">
+                        <TextBlock Name="OnnxResultText"
+                        Text="This box will show detection data."
+                        TextWrapping="Wrap"
+                        FontFamily="Consolas"
+                        FontSize="14"/>
+                    </ScrollViewer>
+                </StackPanel>
+            </Border>
+            
+            
         </Grid>
     </DockPanel>
 </Window>
