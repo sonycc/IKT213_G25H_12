@@ -40,6 +40,7 @@ namespace FishAppUI.MenuFunctions
 
         public async void FileNew_Click(object sender, RoutedEventArgs e)
         {
+            _mainWindow.imageUploadedToBackend = false;
             var dialog = new NewImageDialog { Owner = _mainWindow };
 
             if (dialog.ShowDialog() == true)
@@ -69,6 +70,7 @@ namespace FishAppUI.MenuFunctions
 
         public async void FileOpen_Click(object sender, RoutedEventArgs e)
         {
+            _mainWindow.imageUploadedToBackend = false;
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif|All Files|*.*";
             if (openFileDialog.ShowDialog() == true)

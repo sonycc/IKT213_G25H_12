@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -43,11 +44,11 @@ namespace FishAppUI.MenuFunctions
 
 
         // <MenuItem Header ="Zoom In"                                  Click="ZoomIn_Click"/>
-        public void ZoomIn_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        
+        public async void ZoomIn_Click(object sender, RoutedEventArgs e) => await _mainWindow.ApplyImageOperationAsync("zoom_in");      //Oscar
+
         // <MenuItem Header = "Zoom Out"                                 Click="ZoomOut_Click"/>
-        public void ZoomOut_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-        
+        public async void ZoomOut_Click(object sender, RoutedEventArgs e) => await _mainWindow.ApplyImageOperationAsync("zoom_out");      //Oscar
+
         // <MenuItem Header = "Eraser"                                   Click="Eraser_Click"/>
         public void Eraser_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
         
@@ -68,6 +69,48 @@ namespace FishAppUI.MenuFunctions
 
         // <MenuItem Header = "Text Tool"                                Click="TextTool_Click"/>
         public void TextTool_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
+
+
+        public async void Grayscale_Click(object sender, RoutedEventArgs e) => await _mainWindow.ApplyImageOperationAsync("grayscale");
+        public async void Onnx_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var response = await _mainWindow.httpClient.GetAsync("ONNX");
+                response.EnsureSuccessStatusCode();
+
+                var json = await response.Content.ReadAsStringAsync();
+
+                try
+                {
+                    using var doc = System.Text.Json.JsonDocument.Parse(json);
+                    var preds = doc.RootElement
+                        .GetProperty("onnx")
+                        .GetProperty("predictions");
+
+                    var sb = new System.Text.StringBuilder();
+                    int rank = 1;
+                    foreach (var p in preds.EnumerateArray())
+                    {
+                        var label = p.GetProperty("label").GetString();
+                        var certainty = p.GetProperty("certainty").GetDouble();
+                        sb.AppendLine($"#{rank} {label}: {certainty}%");
+                        rank++;
+                    }
+
+                    _mainWindow.OnnxResultText.Text = sb.ToString();
+                }
+                catch (Exception parseEx)
+                {
+                    _mainWindow.OnnxResultText.Text = $"Failed to parse ONNX response:\n{parseEx.Message}\n\nRaw:\n{json}";
+                }
+            }
+            catch (Exception ex)
+            {
+                _mainWindow.OnnxResultText.Text = $"Error calling ONNX:\n{ex.Message}";
+            }
+        }
+
 
         // <MenuItem Header = "Gaussian Blur"                            Click="GaussianBlur_Click"/>
         public async void GaussianBlur_Click(object sender, RoutedEventArgs e) => await _mainWindow.ApplyImageOperationAsync("gaussian_blur?k_size=5");

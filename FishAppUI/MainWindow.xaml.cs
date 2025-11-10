@@ -24,7 +24,9 @@ namespace FishAppUI
         public readonly Stack<byte[]> imageHistory = new Stack<byte[]>();
         public byte[]? originalCanvasBytes;
         public bool imageChanged = false;
-        
+        public bool imageUploadedToBackend = false;
+
+
         public BrushSize CurrentBrushSize { get; private set; } = BrushSize.Small;
 
         public void SetBrushSize(BrushSize size)
@@ -54,8 +56,8 @@ namespace FishAppUI
                 FileOpenMenuItem.Click +=           fileMenuHandlers.FileOpen_Click;
                 FileSaveMenuItem.Click +=           fileMenuHandlers.FileSave_Click;
                 FileSaveAsMenuItem.Click +=         fileMenuHandlers.FileSaveAs_Click;
-                UndoMenuItem.Click +=               fileMenuHandlers.UndoMenuItem_Click; //##
-                ResetMenuItem.Click +=              fileMenuHandlers.ResetMenuItem_Click; //##
+                //UndoMenuItem.Click +=               fileMenuHandlers.UndoMenuItem_Click; //##
+                //ResetMenuItem.Click +=              fileMenuHandlers.ResetMenuItem_Click; //##
                 FilePropertiesMenuItem.Click +=     fileMenuHandlers.FileProperties_Click;
                 FileQuitMenuItem.Click +=           fileMenuHandlers.FileQuit_Click;
 
@@ -143,35 +145,30 @@ namespace FishAppUI
         }
 
 
-        // Rotate / Grayscale buttons
 
-        private async void GrayscaleButton_Click(object sender, RoutedEventArgs e) => await ApplyImageOperationAsync("grayscale");
 
-        private async void OnnxButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var response = await httpClient.GetAsync("ONNX");
-                response.EnsureSuccessStatusCode();
-
-                var json = await response.Content.ReadAsStringAsync();
-                MessageBox.Show(json, "ONNX Result", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error calling ONNX: {ex.Message}", "ONNX Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
 
         // Combined helper to send image operations or uploads
         public async Task ApplyImageOperationAsync(string endpoint, string? filePath = null)
         {
 
-            if (string.IsNullOrEmpty(currentImagePath)
-                || Canvas.Source is null)
+            if (Canvas.Source is null)
             {
-                MessageBox.Show("Error; No file found.");
+                MessageBox.Show("Error: No image loaded.");
                 return;
+            }
+
+            if (!imageUploadedToBackend)
+            {
+                if (Canvas.Source is BitmapImage bitmap)
+                {
+                    var currentImageBytes = await GetImageBytesFromBitmap(bitmap);
+                    var result = await UploadImageBytesAndGetResult(currentImageBytes);
+                    if (result != null)
+                    {
+                        imageUploadedToBackend = true;
+                    }
+                }
             }
 
             try

@@ -62,8 +62,8 @@
                 </MenuItem>
                 <MenuItem x:Name="TextToolMenuItem" Header="Text Tool" />
                 <Separator/>
-                    <MenuItem x:Name="GrayscaleMenuItem" Header="Grayscale" Click="GrayscaleButton_Click"/>
-                    <MenuItem x:Name="OnnxMenuItem" Header="Run ONNX" Click="OnnxButton_Click"/>
+                    <MenuItem x:Name="GrayscaleMenuItem" Header="Grayscale"/>
+                    <MenuItem x:Name="OnnxMenuItem" Header="Run ONNX"/>
                 <Separator/>
                     <MenuItem x:Name="GaussianBlurMenuItem" Header="Gaussian Blur" />
                     <MenuItem x:Name="SobelFilterMenuItem" Header="Sobel Filter" />
@@ -160,13 +160,30 @@
             </Border>
 
             <!-- Right Panel -->
-            <Border Grid.Row="1" Grid.Column="2" BorderBrush="#CCC" BorderThickness="1"
-            CornerRadius="4" Margin="10" Background="WhiteSmoke">
+            <Border Grid.Row="1" Grid.Column="2" 
+                BorderBrush="#CCC" BorderThickness="1"
+                CornerRadius="4" Margin="10" 
+                Background="WhiteSmoke">
                 <StackPanel Margin="10">
-                    <TextBlock Text="ONNX Fish Detector" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
-                    <TextBlock Text="This box will show detecton data." TextWrapping="Wrap"/>
+                    <TextBlock Text="ONNX Fish Detector" 
+                       FontWeight="Bold" 
+                       FontSize="16" 
+                       Margin="0,0,0,10"/>
+
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                        Height="400"
+                        Background="White"
+                        Padding="5">
+                        <TextBlock Name="OnnxResultText"
+                        Text="This box will show detection data."
+                        TextWrapping="Wrap"
+                        FontFamily="Consolas"
+                        FontSize="14"/>
+                    </ScrollViewer>
                 </StackPanel>
             </Border>
+            
+            
         </Grid>
     </DockPanel>
 </Window>
