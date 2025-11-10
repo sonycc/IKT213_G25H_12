@@ -7,7 +7,7 @@
         <Menu DockPanel.Dock="Top">
             <!-- File Menu -->
             <MenuItem Header="File">
-                    <MenuItem x:Name="FileNewMenuItem" Header="New" />
+                    <MenuItem x:Name="FileNewMenuItem" Header="New"/>
                     <MenuItem x:Name="FileOpenMenuItem" Header="Open" />
                     <MenuItem x:Name="FileSaveMenuItem" Header="Save" />
                     <MenuItem x:Name="FileSaveAsMenuItem" Header="Save As" />
@@ -22,21 +22,21 @@
 
             <!-- Clipboard Menu -->
             <MenuItem Header="_Clipboard">
-                <MenuItem x:Name="ClipboardCopyMenuItem" Header="Copy" />
-                <MenuItem x:Name="ClipboardPasteMenuItem" Header="Paste" />
-                <MenuItem x:Name="ClipboardCutMenuItem" Header="Cut" />
+                <MenuItem x:Name="ClipboardCopyMenuItem" Header="Copy" IsEnabled="False"/>
+                <MenuItem x:Name="ClipboardPasteMenuItem" Header="Paste" IsEnabled="False"/>
+                <MenuItem x:Name="ClipboardCutMenuItem" Header="Cut" IsEnabled="False"/>
             </MenuItem>
 
             <!-- Image Menu -->
             <MenuItem Header="_Image">
                 <MenuItem Header="Select Shape">
-                    <MenuItem x:Name="RectangularSelectMenuItem" Header="Rectangular Selection" />
-                    <MenuItem x:Name="FreeformSelectMenuItem" Header="Freeform Selection" />
-                    <MenuItem x:Name="PolygonSelectMenuItem" Header="Polygon Selection" />
+                    <MenuItem x:Name="RectangularSelectMenuItem" Header="Rectangular Selection" IsEnabled="False"/>
+                    <MenuItem x:Name="FreeformSelectMenuItem" Header="Freeform Selection" IsEnabled="False"/>
+                    <MenuItem x:Name="PolygonSelectMenuItem" Header="Polygon Selection" IsEnabled="False"/>
                 </MenuItem>
                 <Separator/>
-                <MenuItem x:Name="CropMenuItem" Header="Crop" />
-                <MenuItem x:Name="ResizeMenuItem" Header="Resize" />
+                <MenuItem x:Name="CropMenuItem" Header="Crop" IsEnabled="False"/>
+                <MenuItem x:Name="ResizeMenuItem" Header="Resize" IsEnabled="False"/>
                 <MenuItem Header="Rotate">
                     <MenuItem x:Name="Rotate90MenuItem" Header="Rotate 90°" />
                     <MenuItem x:Name="Rotate180MenuItem" Header="Rotate 180°" />
@@ -51,16 +51,16 @@
 
             <!-- Tools Menu -->
             <MenuItem Header="_Tools">
-                <MenuItem x:Name="ZoomInMenuItem" Header="Zoom In" />
-                <MenuItem x:Name="ZoomOutMenuItem" Header="Zoom Out" />
-                <MenuItem x:Name="EraserMenuItem" Header="Eraser" />
-                <MenuItem x:Name="ColorPickerMenuItem" Header="Color Picker" />
+                <MenuItem x:Name="ZoomInMenuItem" Header="Zoom In" IsEnabled="False"/>
+                <MenuItem x:Name="ZoomOutMenuItem" Header="Zoom Out" IsEnabled="False"/>
+                <MenuItem x:Name="EraserMenuItem" Header="Eraser" IsEnabled="False"/>
+                <MenuItem x:Name="ColorPickerMenuItem" Header="Color Picker" IsEnabled="False"/>
                 <MenuItem Header="Paint Brushes">
-                    <MenuItem x:Name="BrushBasicMenuItem" Header="Basic Brush" />
-                    <MenuItem x:Name="BrushTextureMenuItem" Header="Texture Brush" />
-                    <MenuItem x:Name="BrushPatternMenuItem" Header="Pattern Brush" />
+                    <MenuItem x:Name="BrushBasicMenuItem" Header="Basic Brush" IsEnabled="False"/>
+                    <MenuItem x:Name="BrushTextureMenuItem" Header="Texture Brush" IsEnabled="False"/>
+                    <MenuItem x:Name="BrushPatternMenuItem" Header="Pattern Brush" IsEnabled="False"/>
                 </MenuItem>
-                <MenuItem x:Name="TextToolMenuItem" Header="Text Tool" />
+                <MenuItem x:Name="TextToolMenuItem" Header="Text Tool" IsEnabled="False"/>
                 <Separator/>
                     <MenuItem x:Name="GrayscaleMenuItem" Header="Grayscale"/>
                     <MenuItem x:Name="OnnxMenuItem" Header="Run ONNX"/>
@@ -73,20 +73,20 @@
 
             <!-- Shapes Menu -->
             <MenuItem Header="_Shapes">
-                <MenuItem x:Name="ShapeRectangleMenuItem" Header="Rectangle" />
-                <MenuItem x:Name="ShapeEllipseMenuItem" Header="Ellipse" />
-                <MenuItem x:Name="ShapeLineMenuItem" Header="Line" />
-                <MenuItem x:Name="ShapePolygonMenuItem" Header="Polygon" />
+                <MenuItem x:Name="ShapeRectangleMenuItem" Header="Rectangle" IsEnabled="False"/>
+                <MenuItem x:Name="ShapeEllipseMenuItem" Header="Ellipse" IsEnabled="False"/>
+                <MenuItem x:Name="ShapeLineMenuItem" Header="Line" IsEnabled="False"/>
+                <MenuItem x:Name="ShapePolygonMenuItem" Header="Polygon" IsEnabled="False"/>
                 <Separator/>
-                <MenuItem x:Name="ShapeOutlineColorMenuItem" Header="Outline Color" />
-                <MenuItem x:Name="ShapeFillColorMenuItem" Header="Fill Color" />
+                <MenuItem x:Name="ShapeOutlineColorMenuItem" Header="Outline Color" IsEnabled="False"/>
+                <MenuItem x:Name="ShapeFillColorMenuItem" Header="Fill Color" IsEnabled="False"/>
             </MenuItem>
 
 
             <!-- Color Menu -->
             <MenuItem Header="_Color">
-                <MenuItem x:Name="ColorPaletteMenuItem" Header="Color Palette" />
-                <MenuItem Header="Brush Size">
+                <MenuItem x:Name="ColorPaletteMenuItem" Header="Color Palette" IsEnabled="False"/>
+                <MenuItem Header="Brush Size" IsEnabled="False">
                     <MenuItem x:Name="BrushSizeSmallMenuItem" Header="Small" />
                     <MenuItem x:Name="BrushSizeMediumMenuItem" Header="Medium" />
                     <MenuItem x:Name="BrushSizeLargeMenuItem" Header="Large" />
@@ -95,7 +95,7 @@
 
 
             <!-- Layer Menu (Optional) -->
-            <MenuItem Header="_Layer">
+            <MenuItem Header="_Layer" IsEnabled="False">
                 <MenuItem x:Name="NewLayerMenuItem" Header="New Layer"/>
                 <MenuItem x:Name="LoadLayerMenuItem" Header="Load Layer"/>
                 <MenuItem x:Name="EditLayerMenuItem" Header="Edit Layer"/>
@@ -105,7 +105,7 @@
             </MenuItem>
 
             <!-- Filters Menu (Optional Snapchat-like) -->
-            <MenuItem Header="_Filters">
+            <MenuItem Header="_Filters" IsEnabled="False">
                 <MenuItem x:Name="LightningFilterMenuItem" Header="Lightning Filter"/>
                 <MenuItem x:Name="FireFilterMenuItem" Header="Fire Filter"/>
                 <MenuItem x:Name="BubblesFilterMenuItem" Header="Bubbles Filter"/>
