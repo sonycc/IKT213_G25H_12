@@ -6,53 +6,44 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace FishAppUI.MenuFunctions
+namespace FishAppUI;
+
+
+
+
+/*
+<!-- Shapes Menu -->
+<MenuItem Header="_Shapes">
+    <MenuItem Header="Rectangle"        Click="ShapeRectangle_Click"/>
+    <MenuItem Header="Ellipse"          Click="ShapeEllipse_Click"/>
+    <MenuItem Header="Line"             Click="ShapeLine_Click"/>
+    <MenuItem Header="Polygon"          Click="ShapePolygon_Click"/>
+    <Separator/>
+    <MenuItem Header="Outline Color"    Click="ShapeOutlineColor_Click"/>
+    <MenuItem Header="Fill Color"       Click="ShapeFillColor_Click"/>
+</MenuItem>
+*/
+public partial class MainWindow
 {
 
 
+    // <MenuItem Header = "Rectangle"        Click="ShapeRectangle_Click"/>
+    public void ShapeRectangle_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
 
-    /*
-    <!-- Shapes Menu -->
-    <MenuItem Header="_Shapes">
-        <MenuItem Header="Rectangle"        Click="ShapeRectangle_Click"/>
-        <MenuItem Header="Ellipse"          Click="ShapeEllipse_Click"/>
-        <MenuItem Header="Line"             Click="ShapeLine_Click"/>
-        <MenuItem Header="Polygon"          Click="ShapePolygon_Click"/>
-        <Separator/>
-        <MenuItem Header="Outline Color"    Click="ShapeOutlineColor_Click"/>
-        <MenuItem Header="Fill Color"       Click="ShapeFillColor_Click"/>
-    </MenuItem>
-    */
-    internal class ShapesMenuHandlers
-    {
+    // <MenuItem Header = "Ellipse"          Click="ShapeEllipse_Click"/>
+    public void ShapeEllipse_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
 
-        public readonly MainWindow _mainWindow;
+    // <MenuItem Header = "Line"             Click="ShapeLine_Click"/>
+    public void ShapeLine_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
 
-        public ShapesMenuHandlers(MainWindow mainWindow)
-        {
-            _mainWindow = mainWindow;
-        }
+    // <MenuItem Header = "Polygon"          Click="ShapePolygon_Click"/>
+    public void ShapePolygon_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
+
+    // <MenuItem Header = "Outline Color"    Click="ShapeOutlineColor_Click"/>
+    public void ShapeOutlineColor_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
+
+    // <MenuItem Header = "Fill Color"       Click="ShapeFillColor_Click"/>
+    public void ShapeFillColor_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
 
 
-
-        // <MenuItem Header = "Rectangle"        Click="ShapeRectangle_Click"/>
-        public void ShapeRectangle_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-
-        // <MenuItem Header = "Ellipse"          Click="ShapeEllipse_Click"/>
-        public void ShapeEllipse_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-
-        // <MenuItem Header = "Line"             Click="ShapeLine_Click"/>
-        public void ShapeLine_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-
-        // <MenuItem Header = "Polygon"          Click="ShapePolygon_Click"/>
-        public void ShapePolygon_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-
-        // <MenuItem Header = "Outline Color"    Click="ShapeOutlineColor_Click"/>
-        public void ShapeOutlineColor_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
-
-        // <MenuItem Header = "Fill Color"       Click="ShapeFillColor_Click"/>
-        public void ShapeFillColor_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
-
-
-    }
 }

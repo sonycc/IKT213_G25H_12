@@ -156,7 +156,35 @@
 
             <!-- Center Canvas -->
             <Border Grid.Row="1" Grid.Column="1" BorderBrush="Black" BorderThickness="2" Background="White" Margin="10">
-                <Image Name="Canvas" Stretch="Uniform"/>
+                <Grid>
+                    <ScrollViewer x:Name="CanvasScrollViewer"
+                      HorizontalScrollBarVisibility="Visible"
+                      VerticalScrollBarVisibility="Visible"
+                      PreviewMouseWheel="CanvasScrollViewer_PreviewMouseWheel"
+                      Background="White"
+                      ClipToBounds="True">
+                        <Grid>
+                            <Image x:Name="Canvas"
+                       Stretch="None"
+                       RenderTransformOrigin="0.5,0.5">
+                                <Image.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform x:Name="CanvasScaleTransform" ScaleX="1" ScaleY="1" />
+                                        <TranslateTransform x:Name="CanvasTranslateTransform" />
+                                    </TransformGroup>
+                                </Image.RenderTransform>
+                            </Image>
+
+                            <!-- Transparent drawing layer -->
+                            <Canvas x:Name="PaintSurface"
+                        Background="Transparent"
+                        MouseDown="PaintSurface_MouseDown"
+                        MouseMove="PaintSurface_MouseMove"
+                        MouseUp="PaintSurface_MouseUp"
+                        Cursor="Cross" />
+                        </Grid>
+                    </ScrollViewer>
+                </Grid>
             </Border>
 
             <!-- Right Panel -->

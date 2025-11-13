@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows;
 
-namespace FishAppUI.MenuFunctions
+
+namespace FishAppUI;
+
+partial class MainWindow
 {
 
 
@@ -29,98 +25,85 @@ namespace FishAppUI.MenuFunctions
         <MenuItem Header="Sobel Filter"                             Click="SobelFilter_Click"/>
         <MenuItem Header="Binary Filter (Histogram Thresholding)"   Click="BinaryFilter_Click"/>
     </MenuItem>
-
     */
-    internal class ToolsMenuHandlers
+
+
+    // <MenuItem Header ="Zoom In"                                  Click="ZoomIn_Click"/>
+    public async void ZoomIn_Click(object sender, RoutedEventArgs e) => await ApplyImageOperationAsync("zoom_in");      //Oscar
+
+    // <MenuItem Header = "Zoom Out"                                 Click="ZoomOut_Click"/>
+    public async void ZoomOut_Click(object sender, RoutedEventArgs e) => await ApplyImageOperationAsync("zoom_out");      //Oscar
+
+    // <MenuItem Header = "Eraser"                                   Click="Eraser_Click"/>
+    public void Eraser_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
+
+    // <MenuItem Header = "Color Picker"                             Click="ColorPicker_Click"/>
+    public void ColorPicker_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
+
+
+    // <MenuItem Header = "Paint Brushes">
+    // <MenuItem Header="Basic Brush"                          Click="BrushBasic_Click"/>
+    public void BrushBasic_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
+
+    // <MenuItem Header = "Texture Brush"                        Click="BrushTexture_Click"/>
+    public void BrushTexture_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
+
+    // <MenuItem Header = "Pattern Brush"                        Click="BrushPattern_Click"/>
+    public void BrushPattern_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
+
+
+    // <MenuItem Header = "Text Tool"                                Click="TextTool_Click"/>
+    public void TextTool_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
+
+
+    public async void Grayscale_Click(object sender, RoutedEventArgs e) => await ApplyImageOperationAsync("grayscale");
+    public async void Onnx_Click(object sender, RoutedEventArgs e)
     {
-
-        private readonly MainWindow _mainWindow;
-
-        public ToolsMenuHandlers(MainWindow mainWindow)
+        try
         {
-            _mainWindow = mainWindow;
-        }
+            var response = await httpClient.GetAsync("ONNX");
+            response.EnsureSuccessStatusCode();
 
+            var json = await response.Content.ReadAsStringAsync();
 
-
-        // <MenuItem Header ="Zoom In"                                  Click="ZoomIn_Click"/>
-        public async void ZoomIn_Click(object sender, RoutedEventArgs e) => await _mainWindow.ApplyImageOperationAsync("zoom_in");      //Oscar
-
-        // <MenuItem Header = "Zoom Out"                                 Click="ZoomOut_Click"/>
-        public async void ZoomOut_Click(object sender, RoutedEventArgs e) => await _mainWindow.ApplyImageOperationAsync("zoom_out");      //Oscar
-
-        // <MenuItem Header = "Eraser"                                   Click="Eraser_Click"/>
-        public void Eraser_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
-        
-        // <MenuItem Header = "Color Picker"                             Click="ColorPicker_Click"/>
-        public void ColorPicker_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-
-
-        // <MenuItem Header = "Paint Brushes">
-        // <MenuItem Header="Basic Brush"                          Click="BrushBasic_Click"/>
-        public void BrushBasic_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
-
-        // <MenuItem Header = "Texture Brush"                        Click="BrushTexture_Click"/>
-        public void BrushTexture_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
-
-        // <MenuItem Header = "Pattern Brush"                        Click="BrushPattern_Click"/>
-        public void BrushPattern_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //sondre
-
-
-        // <MenuItem Header = "Text Tool"                                Click="TextTool_Click"/>
-        public void TextTool_Click(object sender, RoutedEventArgs e) { /* TODO */ }      //Oscar
-
-
-        public async void Grayscale_Click(object sender, RoutedEventArgs e) => await _mainWindow.ApplyImageOperationAsync("grayscale");
-        public async void Onnx_Click(object sender, RoutedEventArgs e)
-        {
             try
             {
-                var response = await _mainWindow.httpClient.GetAsync("ONNX");
-                response.EnsureSuccessStatusCode();
+                using var doc = System.Text.Json.JsonDocument.Parse(json);
+                var preds = doc.RootElement
+                    .GetProperty("onnx")
+                    .GetProperty("predictions");
 
-                var json = await response.Content.ReadAsStringAsync();
-
-                try
+                var sb = new System.Text.StringBuilder();
+                int rank = 1;
+                foreach (var p in preds.EnumerateArray())
                 {
-                    using var doc = System.Text.Json.JsonDocument.Parse(json);
-                    var preds = doc.RootElement
-                        .GetProperty("onnx")
-                        .GetProperty("predictions");
-
-                    var sb = new System.Text.StringBuilder();
-                    int rank = 1;
-                    foreach (var p in preds.EnumerateArray())
-                    {
-                        var label = p.GetProperty("label").GetString();
-                        var certainty = p.GetProperty("certainty").GetDouble();
-                        sb.AppendLine($"#{rank} {label}: {certainty}%");
-                        rank++;
-                    }
-
-                    _mainWindow.OnnxResultText.Text = sb.ToString();
+                    var label = p.GetProperty("label").GetString();
+                    var certainty = p.GetProperty("certainty").GetDouble();
+                    sb.AppendLine($"#{rank} {label}: {certainty}%");
+                    rank++;
                 }
-                catch (Exception parseEx)
-                {
-                    _mainWindow.OnnxResultText.Text = $"Failed to parse ONNX response:\n{parseEx.Message}\n\nRaw:\n{json}";
-                }
+
+                OnnxResultText.Text = sb.ToString();
             }
-            catch (Exception ex)
+            catch (Exception parseEx)
             {
-                _mainWindow.OnnxResultText.Text = $"Error calling ONNX:\n{ex.Message}";
+                OnnxResultText.Text = $"Failed to parse ONNX response:\n{parseEx.Message}\n\nRaw:\n{json}";
             }
         }
-
-
-        // <MenuItem Header = "Gaussian Blur"                            Click="GaussianBlur_Click"/>
-        public async void GaussianBlur_Click(object sender, RoutedEventArgs e) => await _mainWindow.ApplyImageOperationAsync("gaussian_blur?k_size=5");
-
-        // <MenuItem Header = "Sobel Filter"                             Click="SobelFilter_Click"/>
-        public async void SobelFilter_Click(object sender, RoutedEventArgs e) => await _mainWindow.ApplyImageOperationAsync("sobel?k_size=3");
-
-        // <MenuItem Header = "Binary Filter (Histogram Thresholding)"   Click="BinaryFilter_Click"/>
-        public async void BinaryFilter_Click(object sender, RoutedEventArgs e) => await _mainWindow.ApplyImageOperationAsync("binary");
-
-
+        catch (Exception ex)
+        {
+            OnnxResultText.Text = $"Error calling ONNX:\n{ex.Message}";
+        }
     }
+
+
+    // <MenuItem Header = "Gaussian Blur"                            Click="GaussianBlur_Click"/>
+    public async void GaussianBlur_Click(object sender, RoutedEventArgs e) => await ApplyImageOperationAsync("gaussian_blur?k_size=5");
+
+    // <MenuItem Header = "Sobel Filter"                             Click="SobelFilter_Click"/>
+    public async void SobelFilter_Click(object sender, RoutedEventArgs e) => await ApplyImageOperationAsync("sobel?k_size=3");
+
+    // <MenuItem Header = "Binary Filter (Histogram Thresholding)"   Click="BinaryFilter_Click"/>
+    public async void BinaryFilter_Click(object sender, RoutedEventArgs e) => await ApplyImageOperationAsync("binary");
+
 }
