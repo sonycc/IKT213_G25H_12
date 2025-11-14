@@ -8,7 +8,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.backends.cudnn as cudnn
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import DataLoader, random_split, ConcatDataset
 from torchvision import datasets, transforms, models
 
 SEED          = 42
@@ -20,6 +20,8 @@ LR            = 1e-3
 NUM_WORKERS   = 0
 VAL_SPLIT     = 0.15
 USE_TEST_AS_VAL_IF_NO_VAL = True
+USE_GRAY_DUPLICATE_AUG = True
+
 
 random.seed(SEED)
 torch.manual_seed(SEED)
@@ -65,6 +67,33 @@ eval_tf = transforms.Compose([
     transforms.Normalize([0.485, 0.456, 0.406],
                          [0.229, 0.224, 0.225]),
 ])
+def build_train_dataset_with_gray(train_dir: Path,
+                                  base_tf: transforms.Compose,
+                                  img_size: int,
+                                  enable_gray_dupes: bool):
+
+    base_train = datasets.ImageFolder(str(train_dir), transform=base_tf)
+    class_names = base_train.classes
+
+    if not enable_gray_dupes:
+        return base_train, class_names
+
+    gray_tf = transforms.Compose([
+        transforms.Resize(256),
+        transforms.RandomResizedCrop(img_size, scale=(0.6, 1.0)),
+        transforms.RandomHorizontalFlip(),
+        transforms.Grayscale(num_output_channels=3),
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406],
+                             [0.229, 0.224, 0.225]),
+    ])
+
+    gray_train = datasets.ImageFolder(str(train_dir), transform=gray_tf)
+    train_ds = ConcatDataset([base_train, gray_train])
+
+    print(f"[AUG] Using grayscale duplicate augmentation: "
+          f"{len(base_train)} original + {len(gray_train)} grayscale = {len(train_ds)} total")
+    return train_ds, class_names
 
 def load_datasets():
     test_ds = datasets.ImageFolder(str(test_dir), transform=eval_tf) if test_dir.exists() else None
@@ -73,9 +102,14 @@ def load_datasets():
     if val_like is None:
         raise FileNotFoundError("Need a val/ folder or set USE_TEST_AS_VAL_IF_NO_VAL=True with a test/ folder.")
 
-    train_ds = datasets.ImageFolder(str(train_dir), transform=train_tf)
-    val_ds   = datasets.ImageFolder(str(val_like),  transform=eval_tf)
-    class_names = train_ds.classes
+    train_ds, class_names = build_train_dataset_with_gray(
+        train_dir=train_dir,
+        base_tf=train_tf,
+        img_size=IMG_SIZE,
+        enable_gray_dupes=USE_GRAY_DUPLICATE_AUG,
+    )
+
+    val_ds = datasets.ImageFolder(str(val_like), transform=eval_tf)
 
     if test_ds is not None and set(test_ds.classes) != set(class_names):
         print("[WARN] Test set classes differ from training classes (by name).")
