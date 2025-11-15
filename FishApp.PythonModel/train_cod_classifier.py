@@ -21,7 +21,7 @@ NUM_WORKERS   = 0
 VAL_SPLIT     = 0.15
 USE_TEST_AS_VAL_IF_NO_VAL = True
 USE_GRAY_DUPLICATE_AUG = True
-
+USE_ROTATE_DUPLICATE_AUG = True
 
 random.seed(SEED)
 torch.manual_seed(SEED)
@@ -67,32 +67,53 @@ eval_tf = transforms.Compose([
     transforms.Normalize([0.485, 0.456, 0.406],
                          [0.229, 0.224, 0.225]),
 ])
-def build_train_dataset_with_gray(train_dir: Path,
-                                  base_tf: transforms.Compose,
-                                  img_size: int,
-                                  enable_gray_dupes: bool):
+def build_train_dataset_augmented(
+    train_dir: Path,
+    base_tf: transforms.Compose,
+    img_size: int,
+    use_gray_dupes: bool,
+    use_rotate_dupes: bool,
+):
 
     base_train = datasets.ImageFolder(str(train_dir), transform=base_tf)
     class_names = base_train.classes
 
-    if not enable_gray_dupes:
+    parts = [base_train]
+    msg_parts = [f"{len(base_train)} original"]
+
+    if use_gray_dupes:
+        gray_tf = transforms.Compose([
+            transforms.Resize(256),
+            transforms.RandomResizedCrop(img_size, scale=(0.6, 1.0)),
+            transforms.RandomHorizontalFlip(),
+            transforms.Grayscale(num_output_channels=3),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406],
+                                 [0.229, 0.224, 0.225]),
+        ])
+        gray_train = datasets.ImageFolder(str(train_dir), transform=gray_tf)
+        parts.append(gray_train)
+        msg_parts.append(f"{len(gray_train)} grayscale")
+
+    if use_rotate_dupes:
+        rot_tf = transforms.Compose([
+            transforms.Resize(256),
+            transforms.RandomResizedCrop(img_size, scale=(0.6, 1.0)),
+            transforms.RandomHorizontalFlip(),
+            transforms.RandomRotation(degrees=(-25, 25)),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406],
+                                 [0.229, 0.224, 0.225]),
+        ])
+        rot_train = datasets.ImageFolder(str(train_dir), transform=rot_tf)
+        parts.append(rot_train)
+        msg_parts.append(f"{len(rot_train)} rotated")
+
+    if len(parts) == 1:
         return base_train, class_names
 
-    gray_tf = transforms.Compose([
-        transforms.Resize(256),
-        transforms.RandomResizedCrop(img_size, scale=(0.6, 1.0)),
-        transforms.RandomHorizontalFlip(),
-        transforms.Grayscale(num_output_channels=3),
-        transforms.ToTensor(),
-        transforms.Normalize([0.485, 0.456, 0.406],
-                             [0.229, 0.224, 0.225]),
-    ])
-
-    gray_train = datasets.ImageFolder(str(train_dir), transform=gray_tf)
-    train_ds = ConcatDataset([base_train, gray_train])
-
-    print(f"[AUG] Using grayscale duplicate augmentation: "
-          f"{len(base_train)} original + {len(gray_train)} grayscale = {len(train_ds)} total")
+    train_ds = ConcatDataset(parts)
+    print(f"[AUG] Using dataset augmentation: {' + '.join(msg_parts)} = {len(train_ds)} total")
     return train_ds, class_names
 
 def load_datasets():
@@ -102,11 +123,12 @@ def load_datasets():
     if val_like is None:
         raise FileNotFoundError("Need a val/ folder or set USE_TEST_AS_VAL_IF_NO_VAL=True with a test/ folder.")
 
-    train_ds, class_names = build_train_dataset_with_gray(
+    train_ds, class_names = build_train_dataset_augmented(
         train_dir=train_dir,
         base_tf=train_tf,
         img_size=IMG_SIZE,
-        enable_gray_dupes=USE_GRAY_DUPLICATE_AUG,
+        use_gray_dupes=USE_GRAY_DUPLICATE_AUG,
+        use_rotate_dupes=USE_ROTATE_DUPLICATE_AUG,
     )
 
     val_ds = datasets.ImageFolder(str(val_like), transform=eval_tf)
