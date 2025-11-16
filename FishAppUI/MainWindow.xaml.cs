@@ -24,9 +24,7 @@ public partial class MainWindow : Window
     public string? currentImagePath; // Path for save functionality
     public readonly HttpClient httpClient = new HttpClient { BaseAddress = new Uri("http://127.0.0.1:5000/") };
     public readonly Stack<byte[]> imageHistory = new Stack<byte[]>();
-    public byte[]? originalCanvasBytes;
     public bool imageChanged = false;
-    public bool imageUploadedToBackend = false;
     private WriteableBitmap? writableBitmap;
 
 
@@ -125,7 +123,7 @@ public partial class MainWindow : Window
 
     private void ClampPanToImageBounds()
     {
-        if (Canvas.Source is not BitmapSource bitmap)
+        if (Canvas.Source is not WriteableBitmap bitmap)
             return;
 
         double imgWidth = bitmap.PixelWidth * zoomScale;
@@ -166,11 +164,11 @@ public partial class MainWindow : Window
 
     public void SaveImageToFile(string filePath)
     {
-        if (Canvas.Source is BitmapImage bitmap)
+        if (Canvas.Source is WriteableBitmap bitmap)
         {
             try
             {
-                SaveBitmapImageToFile(bitmap, filePath);
+                SaveWriteableBitmapToFile(bitmap, filePath);
                 MessageBox.Show("Image saved successfully!", "Save Complete", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
@@ -192,32 +190,23 @@ public partial class MainWindow : Window
     public async Task ApplyImageOperationAsync(string endpoint, string? filePath = null)
     {
 
-        if (Canvas.Source is null)
+        if (Canvas.Source is null || writableBitmap is null)
         {
             MessageBox.Show("Error: No image loaded.");
             return;
         }
 
-        if (!imageUploadedToBackend)
-        {
-            if (Canvas.Source is BitmapImage bitmap)
-            {
-                var currentImageBytes = await GetImageBytesFromBitmap(bitmap);
-                var result = await UploadImageBytesAndGetResult(currentImageBytes);
-                if (result != null)
-                {
-                    imageUploadedToBackend = true;
-                }
-            }
-        }
+        imageHistory.Push(GetWritableBitmapBytes(writableBitmap));
+
+
 
         try
         {
             // Save current canvas state before applying operation
-            if (Canvas.Source is BitmapImage bitmap)
+            if (Canvas.Source is WriteableBitmap bitmap)
             {
                 var currentImageBytes = await GetImageBytesFromBitmap(bitmap);
-                imageHistory.Push(currentImageBytes);
+                await UploadImageBytesAndGetResult(currentImageBytes);
             }
 
             HttpResponseMessage response;
@@ -283,8 +272,8 @@ public partial class MainWindow : Window
     }
 
 
-    // Helper to convert BitmapImage to byte array
-    private Task<byte[]> GetImageBytesFromBitmap(BitmapImage bitmap)
+    // Helper to convert WriteableBitmap to byte array
+    private Task<byte[]> GetImageBytesFromBitmap(WriteableBitmap bitmap)
     {
         using var ms = new MemoryStream();
         var encoder = new PngBitmapEncoder();
@@ -293,8 +282,8 @@ public partial class MainWindow : Window
         return Task.FromResult(ms.ToArray());
     }
 
-    // Helper to save BitmapImage to file
-    private void SaveBitmapImageToFile(BitmapImage bitmap, string filePath)
+    // Helper to save WriteableBitmap to file
+    private void SaveWriteableBitmapToFile(WriteableBitmap bitmap, string filePath)
     {
         var fileExt = Path.GetExtension(filePath).ToLower();
 
@@ -312,7 +301,7 @@ public partial class MainWindow : Window
     }
 
     // Helper to upload image bytes to backend and get processed result
-    private async Task<BitmapImage?> UploadImageBytesAndGetResult(byte[] imageBytes)
+    private async Task<WriteableBitmap?> UploadImageBytesAndGetResult(byte[] imageBytes)
     {
         try
         {
@@ -336,8 +325,8 @@ public partial class MainWindow : Window
         }
     }
 
-    // Helper to convert byte[] to BitmapImage
-    private BitmapImage LoadImageFromBytes(byte[] imageBytes)
+    // Helper to convert byte[] to WriteableBitmap
+    private WriteableBitmap LoadImageFromBytes(byte[] imageBytes)
     {
         using var ms = new MemoryStream(imageBytes);
         var bitmap = new BitmapImage();
@@ -346,7 +335,9 @@ public partial class MainWindow : Window
         bitmap.StreamSource = ms;
         bitmap.EndInit();
         bitmap.Freeze();
-        return bitmap;
+
+        var writable = new WriteableBitmap(bitmap);
+        return writable;
     }
 
 
@@ -364,12 +355,11 @@ public partial class MainWindow : Window
             bitmap.Freeze();
 
             writableBitmap = new WriteableBitmap(bitmap);
+
             Canvas.Source = writableBitmap;
 
-            Canvas.Source = bitmap;
             currentImagePath = filePath;
             imageHistory.Clear();
-            originalCanvasBytes = null;
             await UpdateButtonStates();
         }
         catch (Exception ex)

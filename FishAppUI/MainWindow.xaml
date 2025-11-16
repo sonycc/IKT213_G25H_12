@@ -163,7 +163,6 @@
                       PreviewMouseWheel="CanvasScrollViewer_PreviewMouseWheel"
                       Background="White"
                       ClipToBounds="True">
-                        <Grid>
                             <Image x:Name="Canvas"
                        Stretch="None"
                        RenderTransformOrigin="0.5,0.5">
@@ -174,15 +173,6 @@
                                     </TransformGroup>
                                 </Image.RenderTransform>
                             </Image>
-
-                            <!-- Transparent drawing layer -->
-                            <Canvas x:Name="PaintSurface"
-                        Background="Transparent"
-                        MouseDown="PaintSurface_MouseDown"
-                        MouseMove="PaintSurface_MouseMove"
-                        MouseUp="PaintSurface_MouseUp"
-                        Cursor="Cross" />
-                        </Grid>
                     </ScrollViewer>
                 </Grid>
             </Border>

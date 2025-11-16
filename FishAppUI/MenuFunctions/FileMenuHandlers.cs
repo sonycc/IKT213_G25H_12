@@ -33,7 +33,6 @@ public partial class MainWindow
 
     public async void FileNew_Click(object sender, RoutedEventArgs e)
     {
-        imageUploadedToBackend = false;
         var dialog = new NewImageDialog { Owner = this };
 
         if (dialog.ShowDialog() == true)
@@ -63,7 +62,6 @@ public partial class MainWindow
 
     public async void FileOpen_Click(object sender, RoutedEventArgs e)
     {
-        imageUploadedToBackend = false;
         OpenFileDialog openFileDialog = new OpenFileDialog();
         openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif|All Files|*.*";
         if (openFileDialog.ShowDialog() == true)
@@ -102,7 +100,7 @@ public partial class MainWindow
     // <MenuItem Header = "Properties"   Click="FileProperties_Click"/>
     public void FileProperties_Click(object sender, RoutedEventArgs e)
     {
-        if (Canvas.Source is BitmapImage bitmap)
+        if (Canvas.Source is WriteableBitmap bitmap)
         {
             var properties = $"Width: {bitmap.PixelWidth}px\n" +
                            $"Height: {bitmap.PixelHeight}px\n" +
