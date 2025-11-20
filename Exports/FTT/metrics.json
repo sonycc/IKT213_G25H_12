@@ -1,0 +1,149 @@
+{
+  "epochs": 10,
+  "best_val_acc": 0.9029443838604144,
+  "device": "cpu",
+  "cuda_device_name": null,
+  "num_train": 26379,
+  "num_val": 2751,
+  "num_test": 1728,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.608909796245393,
+      "val_acc": 0.6568520537986187,
+      "seconds": 907.0655641555786
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.8590955348434927,
+      "val_acc": 0.7611777535441657,
+      "seconds": 9531.372361660004
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.6221744800075805,
+      "val_acc": 0.8153398764085787,
+      "seconds": 2034.651796579361
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.471483004032473,
+      "val_acc": 0.8320610687022901,
+      "seconds": 1637.021729707718
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.37418589679828423,
+      "val_acc": 0.8444202108324246,
+      "seconds": 934.9722957611084
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.30749999692187563,
+      "val_acc": 0.861504907306434,
+      "seconds": 925.1266360282898
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.2709860828740049,
+      "val_acc": 0.8829516539440203,
+      "seconds": 900.8622009754181
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.21890818058545974,
+      "val_acc": 0.8793166121410396,
+      "seconds": 897.4262075424194
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.20475509000596895,
+      "val_acc": 0.9029443838604144,
+      "seconds": 898.4575905799866
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.1777896788368268,
+      "val_acc": 0.8931297709923665,
+      "seconds": 899.1402695178986
+    }
+  ],
+  "test": {
+    "test_acc": 0.890625,
+    "per_class_acc": {
+      "Bangus": 1.0,
+      "Big Head Carp": 0.8604651162790697,
+      "Black Spotted Barb": 0.875,
+      "Catfish": 0.9032258064516129,
+      "Climbing Perch": 0.6666666666666666,
+      "Fourfinger Threadfin": 0.8157894736842105,
+      "Freshwater Eel": 0.9272727272727272,
+      "Glass Perchlet": 0.8571428571428571,
+      "Goby": 0.9274193548387096,
+      "Gold Fish": 1.0,
+      "Gourami": 0.9047619047619048,
+      "Grass Carp": 0.957983193277311,
+      "Green Spotted Puffer": 1.0,
+      "Indian Carp": 0.9433962264150944,
+      "Indo-Pacific Tarpon": 0.9230769230769231,
+      "Jaguar Gapote": 1.0,
+      "Janitor Fish": 0.9482758620689655,
+      "Knifefish": 0.7384615384615385,
+      "Long-Snouted Pipefish": 0.9230769230769231,
+      "Mosquito Fish": 0.8235294117647058,
+      "Mudfish": 0.7352941176470589,
+      "Mullet": 0.8157894736842105,
+      "Pangasius": 0.6842105263157895,
+      "Perch": 0.8333333333333334,
+      "Scat Fish": 1.0,
+      "Silver Barb": 0.859375,
+      "Silver Carp": 1.0,
+      "Silver Perch": 0.8421052631578947,
+      "Snakehead": 0.8723404255319149,
+      "Tenpounder": 0.875,
+      "Tilapia": 0.875
+    },
+    "num_test": 1728
+  },
+  "labels": [
+    "Bangus",
+    "Big Head Carp",
+    "Black Spotted Barb",
+    "Catfish",
+    "Climbing Perch",
+    "Fourfinger Threadfin",
+    "Freshwater Eel",
+    "Glass Perchlet",
+    "Goby",
+    "Gold Fish",
+    "Gourami",
+    "Grass Carp",
+    "Green Spotted Puffer",
+    "Indian Carp",
+    "Indo-Pacific Tarpon",
+    "Jaguar Gapote",
+    "Janitor Fish",
+    "Knifefish",
+    "Long-Snouted Pipefish",
+    "Mosquito Fish",
+    "Mudfish",
+    "Mullet",
+    "Pangasius",
+    "Perch",
+    "Scat Fish",
+    "Silver Barb",
+    "Silver Carp",
+    "Silver Perch",
+    "Snakehead",
+    "Tenpounder",
+    "Tilapia"
+  ],
+  "artifacts": {
+    "onnx": "C:\\Users\\sondr\\ikt213\\FishApp\\FishApp.PythonModel\\exports\\fish_classifier.onnx",
+    "labels_txt": "C:\\Users\\sondr\\ikt213\\FishApp\\FishApp.PythonModel\\exports\\labels.txt",
+    "labels_json": "C:\\Users\\sondr\\ikt213\\FishApp\\FishApp.PythonModel\\exports\\labels.json",
+    "best_model_pt": "C:\\Users\\sondr\\ikt213\\FishApp\\FishApp.PythonModel\\exports\\best_model.pt",
+    "training_log_csv": "C:\\Users\\sondr\\ikt213\\FishApp\\FishApp.PythonModel\\exports\\training_log.csv",
+    "test_predictions_csv": "C:\\Users\\sondr\\ikt213\\FishApp\\FishApp.PythonModel\\exports\\test_predictions.csv"
+  }
+}

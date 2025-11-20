@@ -1,107 +1,107 @@
 {
   "epochs": 10,
-  "best_val_acc": 0.8545983278807706,
+  "best_val_acc": 0.9029443838604144,
   "device": "cpu",
   "cuda_device_name": null,
-  "num_train": 8793,
+  "num_train": 26379,
   "num_val": 2751,
   "num_test": 1728,
   "history": [
     {
       "epoch": 1,
-      "train_loss": 1.9181562000528667,
-      "val_acc": 0.5776081424936387,
-      "seconds": 373.9656071662903
+      "train_loss": 1.608909796245393,
+      "val_acc": 0.6568520537986187,
+      "seconds": 907.0655641555786
     },
     {
       "epoch": 2,
-      "train_loss": 1.2228920325936818,
-      "val_acc": 0.6750272628135223,
-      "seconds": 399.03912353515625
+      "train_loss": 0.8590955348434927,
+      "val_acc": 0.7611777535441657,
+      "seconds": 9531.372361660004
     },
     {
       "epoch": 3,
-      "train_loss": 0.9109168869229181,
-      "val_acc": 0.6852053798618684,
-      "seconds": 400.30064153671265
+      "train_loss": 0.6221744800075805,
+      "val_acc": 0.8153398764085787,
+      "seconds": 2034.651796579361
     },
     {
       "epoch": 4,
-      "train_loss": 0.7750746988604856,
-      "val_acc": 0.7051981097782625,
-      "seconds": 424.6092438697815
+      "train_loss": 0.471483004032473,
+      "val_acc": 0.8320610687022901,
+      "seconds": 1637.021729707718
     },
     {
       "epoch": 5,
-      "train_loss": 0.675672008179024,
-      "val_acc": 0.7731733914940022,
-      "seconds": 439.24771642684937
+      "train_loss": 0.37418589679828423,
+      "val_acc": 0.8444202108324246,
+      "seconds": 934.9722957611084
     },
     {
       "epoch": 6,
-      "train_loss": 0.5789030863402796,
-      "val_acc": 0.7640857869865504,
-      "seconds": 380.4039514064789
+      "train_loss": 0.30749999692187563,
+      "val_acc": 0.861504907306434,
+      "seconds": 925.1266360282898
     },
     {
       "epoch": 7,
-      "train_loss": 0.5336625462138014,
-      "val_acc": 0.8189749182115594,
-      "seconds": 423.0710594654083
+      "train_loss": 0.2709860828740049,
+      "val_acc": 0.8829516539440203,
+      "seconds": 900.8622009754181
     },
     {
       "epoch": 8,
-      "train_loss": 0.4633027418785286,
-      "val_acc": 0.8309705561613958,
-      "seconds": 429.63864946365356
+      "train_loss": 0.21890818058545974,
+      "val_acc": 0.8793166121410396,
+      "seconds": 897.4262075424194
     },
     {
       "epoch": 9,
-      "train_loss": 0.42187776866049187,
-      "val_acc": 0.8545983278807706,
-      "seconds": 440.7527356147766
+      "train_loss": 0.20475509000596895,
+      "val_acc": 0.9029443838604144,
+      "seconds": 898.4575905799866
     },
     {
       "epoch": 10,
-      "train_loss": 0.38614825828787436,
-      "val_acc": 0.8498727735368957,
-      "seconds": 439.03493642807007
+      "train_loss": 0.1777896788368268,
+      "val_acc": 0.8931297709923665,
+      "seconds": 899.1402695178986
     }
   ],
   "test": {
-    "test_acc": 0.8518518518518519,
+    "test_acc": 0.890625,
     "per_class_acc": {
-      "Bangus": 0.5,
-      "Big Head Carp": 0.8372093023255814,
-      "Black Spotted Barb": 0.825,
-      "Catfish": 0.7580645161290323,
-      "Climbing Perch": 0.7,
-      "Fourfinger Threadfin": 0.868421052631579,
-      "Freshwater Eel": 0.8727272727272727,
+      "Bangus": 1.0,
+      "Big Head Carp": 0.8604651162790697,
+      "Black Spotted Barb": 0.875,
+      "Catfish": 0.9032258064516129,
+      "Climbing Perch": 0.6666666666666666,
+      "Fourfinger Threadfin": 0.8157894736842105,
+      "Freshwater Eel": 0.9272727272727272,
       "Glass Perchlet": 0.8571428571428571,
-      "Goby": 0.8629032258064516,
-      "Gold Fish": 0.9512195121951219,
-      "Gourami": 0.9682539682539683,
-      "Grass Carp": 0.907563025210084,
+      "Goby": 0.9274193548387096,
+      "Gold Fish": 1.0,
+      "Gourami": 0.9047619047619048,
+      "Grass Carp": 0.957983193277311,
       "Green Spotted Puffer": 1.0,
-      "Indian Carp": 0.9811320754716981,
-      "Indo-Pacific Tarpon": 0.6666666666666666,
-      "Jaguar Gapote": 0.9545454545454546,
-      "Janitor Fish": 0.896551724137931,
-      "Knifefish": 0.8461538461538461,
-      "Long-Snouted Pipefish": 0.6730769230769231,
-      "Mosquito Fish": 0.8823529411764706,
-      "Mudfish": 0.6764705882352942,
-      "Mullet": 0.631578947368421,
-      "Pangasius": 0.868421052631579,
-      "Perch": 0.95,
-      "Scat Fish": 0.9090909090909091,
-      "Silver Barb": 0.9375,
+      "Indian Carp": 0.9433962264150944,
+      "Indo-Pacific Tarpon": 0.9230769230769231,
+      "Jaguar Gapote": 1.0,
+      "Janitor Fish": 0.9482758620689655,
+      "Knifefish": 0.7384615384615385,
+      "Long-Snouted Pipefish": 0.9230769230769231,
+      "Mosquito Fish": 0.8235294117647058,
+      "Mudfish": 0.7352941176470589,
+      "Mullet": 0.8157894736842105,
+      "Pangasius": 0.6842105263157895,
+      "Perch": 0.8333333333333334,
+      "Scat Fish": 1.0,
+      "Silver Barb": 0.859375,
       "Silver Carp": 1.0,
-      "Silver Perch": 0.7192982456140351,
-      "Snakehead": 0.5957446808510638,
-      "Tenpounder": 0.8035714285714286,
-      "Tilapia": 0.8214285714285714
+      "Silver Perch": 0.8421052631578947,
+      "Snakehead": 0.8723404255319149,
+      "Tenpounder": 0.875,
+      "Tilapia": 0.875
     },
     "num_test": 1728
   },
@@ -139,11 +139,11 @@
     "Tilapia"
   ],
   "artifacts": {
-    "onnx": "C:\\Users\\arnda\\ikt213g25h\\IKT213_G25H_12\\FishApp.PythonModel\\exports\\fish_classifier.onnx",
-    "labels_txt": "C:\\Users\\arnda\\ikt213g25h\\IKT213_G25H_12\\FishApp.PythonModel\\exports\\labels.txt",
-    "labels_json": "C:\\Users\\arnda\\ikt213g25h\\IKT213_G25H_12\\FishApp.PythonModel\\exports\\labels.json",
-    "best_model_pt": "C:\\Users\\arnda\\ikt213g25h\\IKT213_G25H_12\\FishApp.PythonModel\\exports\\best_model.pt",
-    "training_log_csv": "C:\\Users\\arnda\\ikt213g25h\\IKT213_G25H_12\\FishApp.PythonModel\\exports\\training_log.csv",
-    "test_predictions_csv": "C:\\Users\\arnda\\ikt213g25h\\IKT213_G25H_12\\FishApp.PythonModel\\exports\\test_predictions.csv"
+    "onnx": "C:\\Users\\sondr\\ikt213\\FishApp\\FishApp.PythonModel\\exports\\fish_classifier.onnx",
+    "labels_txt": "C:\\Users\\sondr\\ikt213\\FishApp\\FishApp.PythonModel\\exports\\labels.txt",
+    "labels_json": "C:\\Users\\sondr\\ikt213\\FishApp\\FishApp.PythonModel\\exports\\labels.json",
+    "best_model_pt": "C:\\Users\\sondr\\ikt213\\FishApp\\FishApp.PythonModel\\exports\\best_model.pt",
+    "training_log_csv": "C:\\Users\\sondr\\ikt213\\FishApp\\FishApp.PythonModel\\exports\\training_log.csv",
+    "test_predictions_csv": "C:\\Users\\sondr\\ikt213\\FishApp\\FishApp.PythonModel\\exports\\test_predictions.csv"
   }
 }
