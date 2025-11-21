@@ -36,7 +36,7 @@ USE_ROTATE_DUPLICATE_AUG = True     | adds rotated copies of images to the train
 ```
 
 
-Follow all the steps above but instead you need to start:
+Follow all the steps from "Python Backend" but instead you need to start:
 ```bash
 python ../FishApp.PythonModel/train_cod_classifier.py
 ```
